@@ -6,6 +6,21 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>6tisch-simulator-webapp</title>
+    <script src="/eel.js"></script>
+    <script>
+     window.onload = function () {
+         try {
+             window.eel = eel
+             eel.expose(notifyLogEvent)
+             function notifyLogEvent (logEvent) {
+             }
+         } catch (e) {
+             if (e instanceof ReferenceError) {
+                 window.eel = undefined
+             }
+         }
+     }
+    </script>
   </head>
   <body>
     <noscript>
