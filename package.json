@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "concurrently \"npm:backend-server\" \"npm:dev-server\"",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "dev-server": "vue-cli-service serve",
+    "backend-server": "python -m backend",
     "test:backend": "pytest backend"
   },
   "dependencies": {
