@@ -9,6 +9,7 @@
     "test:backend": "pytest backend"
   },
   "dependencies": {
+    "concurrently": "^4.1.0",
     "vue": "^2.5.17",
     "vuex": "^3.0.1"
   },
