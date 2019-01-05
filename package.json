@@ -7,7 +7,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "dev-server": "vue-cli-service serve",
-    "backend-server": "python -m backend",
+    "backend-server": "backend/start",
     "test": "concurrently -k -s first \"npm:backend-server\" \"npm:test:unit\"",
     "test:backend": "pytest backend",
     "test:unit": "vue-cli-service test:unit"
