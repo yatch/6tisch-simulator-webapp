@@ -81,20 +81,32 @@ if args.auto_restart is True:
     print 'Start watching .py files under "{0}"'.format(SIM_ENGINE_MODULE_PATH)
     observer.schedule(event_handler, SIM_ENGINE_MODULE_PATH, recursive=True)
     observer.start()
+
     try:
         while True:
             time.sleep(1)
         assert False # shouldn't come here
     except BaseException:
         # catch all types of exception
-        print 'terminating...'
-
-        # stop observer
-        observer.stop()
-        observer.join()
-
+        sys.stderr.write('terminating...\n')
+    finally:
         # stop backend server (process)
         stop_server()
+
+    try:
+        observer.stop()
+    except KeyboardInterrupt:
+        # for some reason, observer.stop() raises a Keyboardinterrupt
+        # exception (happened on macOS) when this script is invoked
+        # through "npm run" and killed by Ctrl-C. it seems npm sends
+        # the INT signal twice to a process running this process. but
+        # not sure exactly what happened. this try...except... block
+        # handles that situation so that npm ends without error.
+        sys.stderr.write('KeyboardInterrupt is raised again...\n')
+        import traceback
+        traceback.print_exc()
+
+    observer.join()
 
 else:
     # start the backend server DON'T import 'backend' and its
