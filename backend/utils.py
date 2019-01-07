@@ -12,6 +12,10 @@ import backend.sim
 LISTEN_PORT = 8081
 
 
+def on_close_callback(page, sockets):
+    print 'Detect a WebSocket is closed; keep running'
+
+
 def start_server():
     # initialize eel
     eel.init(backend.DEFAULT_WEB_ROOT_PATH)
@@ -30,5 +34,6 @@ def start_server():
             'host': config['host'],
             'port': LISTEN_PORT,
             'mode': None
-        }
+        },
+        callback = on_close_callback
     )
