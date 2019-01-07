@@ -77,6 +77,30 @@ def get_available_scheduling_functions():
 
 
 @eel.expose
+def get_available_connectivities():
+    conn_py_path = os.path.join(
+        backend.get_simulator_path(),
+        'SimEngine/Connectivity.py'
+    )
+    ret_val = set()
+    with open(conn_py_path, 'r') as f:
+        ret_val = set(
+            re.findall(r'Connectivity\w+', f.read(), re.MULTILINE)
+        )
+
+    # remove "ConnectivityBase" that is the base (super) class for
+    # concrete scheduling function implementations
+    ret_val.remove('ConnectivityBase')
+
+    # strip leading "Connectivity" and return
+    return map(
+        lambda elem:
+        re.sub(r'Connectivity(\w+)', r'\1', elem),
+        ret_val
+    )
+
+
+@eel.expose
 def start(settings, log_notification_filter='all'):
     global _sim_engine
 

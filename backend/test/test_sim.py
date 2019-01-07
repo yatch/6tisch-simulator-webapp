@@ -75,6 +75,13 @@ def test_get_available_scheduling_functions():
     assert 'MSF' in ret
 
 
+def test_get_available_connectivities():
+    ret = backend.sim.get_available_connectivities()
+    assert 'Linear' in ret
+    assert 'Random' in ret
+    assert 'K7' in ret
+
+
 def test_start():
     settings = backend.sim.get_default_settings()
     # set one (slotframe) to exec_numSlotframesPerRun so that the test
