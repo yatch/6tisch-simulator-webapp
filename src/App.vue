@@ -41,6 +41,16 @@ export default {
             this.$store.dispatch('changeConnectionState', 'disconnected')
           }
         )
+        window.eel.get_default_settings()(defaultSettings => {
+          this.$store.dispatch('saveSettings', defaultSettings)
+        })
+        window.eel.get_available_scheduling_functions()(availableSFs => {
+          this.$store.dispatch('saveAvailableSFs', availableSFs)
+        })
+        window.eel.get_available_connectivities()(availableConnectivities => {
+          this.$store.dispatch('saveAvailableConnectivities',
+                               availableConnectivities)
+        })
       }
     })
   }
