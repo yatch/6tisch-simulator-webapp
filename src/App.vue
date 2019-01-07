@@ -2,8 +2,9 @@
   <v-app>
     <ToolBar/>
     <NavigationDrawer/>
+    <AutoReload/>
     <v-content>
-      <AutoReload/>
+      <router-view/>
     </v-content>
   </v-app>
 </template>
