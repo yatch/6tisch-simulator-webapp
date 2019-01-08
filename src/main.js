@@ -4,6 +4,7 @@ import App from './App.vue'
 import store from './store'
 import router from './router'
 import './plugins/cytoscape'
+import './plugins/apexchart'
 
 Vue.config.productionTip = false
 
