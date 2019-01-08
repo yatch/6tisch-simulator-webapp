@@ -3,6 +3,10 @@
 # CONSTANTS
 import json
 import os
+
+# we CANNOT import backend and refer its variables because importing
+# backend causes gevent to get imported that prevents watchdog from
+# working correctly.
 BACKEND_ROOTDIR_PATH = os.path.dirname(__file__)
 BACKEND_CONFIG_PATH = os.path.join(
     BACKEND_ROOTDIR_PATH,
