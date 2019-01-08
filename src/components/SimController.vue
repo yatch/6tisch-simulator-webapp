@@ -1,5 +1,5 @@
 <template>
-<v-card>
+<v-card width="200px">
   <v-card-title>Controller</v-card-title>
   <v-card-text class="display-1 text-xs-center">
     {{ elapsedTime }}

@@ -12,7 +12,15 @@ export default new Vuex.Store({
     availableConnectivities: undefined,
     simulator: undefined,
     currentSlotframeNumber: undefined,
-    lastLogEvent: undefined
+    lastLogEvent: undefined,
+    appTxNum: 0,
+    appRxNum: 0,
+    appDropNum: 0,
+    appLatencySum: 0,
+    appLatencyNumRecords: 0,
+    appLatencyMax: undefined,
+    appLatencyMin: undefined,
+    motes: [],
   },
   mutations: {
     changeConnectionState (state, payload) {
@@ -41,8 +49,51 @@ export default new Vuex.Store({
     setLastLogEvent (state, payload) {
       state.lastLogEvent = payload.logEvent
     },
+
+    resetAppTxNum (state) { state.appTxNum = 0},
+    incrementAppTxNum (state) { state.appTxNum += 1 },
+
+    resetAppRxNum (state) { state.appRxNum = 0},
+    incrementAppRxNum (state) { state.appRxNum += 1
+                              },
+    resetAppDropNum (state) { state.appDropNum = 0},
+    incrementAppDropNum (state) { state.appDropNum += 1 },
+
+    resetAppLatencySum (state) { state.appLatencySum = 0},
+    addAppLatencySum (state, payload) { state.appLatencySum += payload.newAppLatency },
+
+    resetAppLatencyNumRecord (state) { state.appLatencyNumRecords = 0},
+    incrementAppLatencyNumRecord (state) { state.appLatencyNumRecords += 1},
+
+    resetAppLatencyMax (state) { state.appLatencyMax = undefined},
+    updateAppLatencyMax (state, payload) {
+      if (state.appLatencyMax === undefined || state.appLatencyMax < payload.newAppLatency) {
+        state.appLatencyMax = payload.newAppLatency
+      }
+    },
+
+    resetAppLatencyMin (state) { state.appLatencyMin = undefined },
+    updateAppLatencyMin (state, payload) {
+      if (state.appLatencyMin === undefined || payload.newAppLatency < state.appLatencyMin) {
+        state.appLatencyMin = payload.newAppLatency
+      }
+    },
+
+    resetTschLastCellAllocationEvent (state) { state.tschLastAllocationEvent = undefined },
+    updateTschLastCellAllocationEvent (state, payload) { state.tschLastAllocationEvent = payload.newCellAllocation },
+    incrementMoteNumCells (state, payload) { state.motes[payload.moteId].numCells += 1 },
+    decrementMoteNumCells (state, payload) { state.motes[payload.moteId].numCells -= 1 },
+
     changeSimulatorState (state, payload) {
       state.simulator = payload.newState
+    },
+
+    resetMoteState (state) {
+      state.motes = []
+    },
+    initMoteState (state) {
+      const exec_numMotes = state.settings.exec_numMotes
+      state.motes = Array(exec_numMotes).fill().map(() => ({ numCells: 0 }))
     }
   },
   actions: {
@@ -67,12 +118,52 @@ export default new Vuex.Store({
     putLogEvent (context, logEvent) {
       context.commit('updateCurrentSlotframeNumber', { logEvent })
       context.commit('setLastLogEvent', { logEvent })
+      if (logEvent._type === 'app.rx' ||
+          logEvent._type === 'packet_dropped' && logEvent.packet.type === 'DATA') {
+        context.dispatch('putAppPacketReceptionEvent', logEvent)
+      }
+      if (logEvent._type === 'tsch.add_cell' ||
+          logEvent._type === 'tsch.delete_cell') {
+        context.dispatch('putTschCellAllocationEvent', logEvent)
+      }
+    },
+    putAppPacketReceptionEvent (context, event) {
+      context.commit('incrementAppTxNum')
+      if (event._type === 'app.rx') {
+        context.commit('incrementAppRxNum')
+        const slotDuration = context.state.settings.tsch_slotDuration
+        const newAppLatency = (event._asn - event.packet.app.timestamp) * slotDuration
+        context.commit('addAppLatencySum', { newAppLatency })
+        context.commit('incrementAppLatencyNumRecord')
+        context.commit('updateAppLatencyMax', { newAppLatency })
+        context.commit('updateAppLatencyMin', { newAppLatency })
+      } else {
+        // logEvent._type === 'packet_dropped'
+        context.commit('incrementAppDropNum')
+      }
+    },
+    putTschCellAllocationEvent (context, event) {
+      const newCellAllocation = {
+        type: event._type,
+        moteId: event._mote_id,
+        slotFrameHandle: event.slotFrameHandle,
+        slotOffset: event.slotOffset,
+        channelOffset: event.channelOffset,
+        neighbor: event.neighbor,
+        cellOptions: event.cellOptions
+      }
+      context.commit('updateTschLastCellAllocationEvent', { newCellAllocation })
+      if (newCellAllocation.type === 'tsch.add_cell') {
+        context.commit('incrementMoteNumCells', { moteId: newCellAllocation.moteId })
+      } else if (newCellAllocation.type === 'tsch.add_cell') {
+        context.commit('decrementMoteNumCells', { moteId: newCellAllocation.moteId })
+      }
     },
     startSimulation (context) {
-      context.commit('updateCurrentSlotframeNumber', { logEvent: undefined })
-      context.commit('setLastLogEvent', { logEvent: undefined })
+      context.dispatch('clearSimulationState')
+      context.commit('initMoteState')
       context.commit('changeSimulatorState', { newState: 'running' })
-      window.eel.start(context.state.settings)(() => {
+      window.eel.start(context.state.settings, ['app.rx', 'packet_dropped', 'tsch.add_cell', 'tsch.delete_cell'])(() => {
         // a simulation is done
         context.commit('changeSimulatorState', { newState: 'ready' })
       })
@@ -89,10 +180,22 @@ export default new Vuex.Store({
     },
     abortSimulation (context) {
       window.eel.abort()(() => {
-        context.commit('updateCurrentSlotframeNumber', { logEvent: undefined })
-        context.commit('setLastLogEvent', { logEvent: undefined })
+        context.dispatch('clearSimulationState')
         context.commit('changeSimulatorState', { newState: 'ready' })
       })
+    },
+    clearSimulationState (context) {
+      context.commit('updateCurrentSlotframeNumber', { logEvent: undefined })
+      context.commit('setLastLogEvent', { logEvent: undefined })
+      context.commit('resetAppTxNum')
+      context.commit('resetAppRxNum')
+      context.commit('resetAppDropNum')
+      context.commit('resetAppLatencySum')
+      context.commit('resetAppLatencyNumRecord')
+      context.commit('resetAppLatencyMax')
+      context.commit('resetAppLatencyMin')
+      context.commit('resetTschLastCellAllocationEvent')
+      context.commit('resetMoteState')
     }
   }
 })
