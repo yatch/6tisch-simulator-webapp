@@ -21,7 +21,7 @@ def start_server():
     eel.init(backend.DEFAULT_WEB_ROOT_PATH)
 
     # start the server
-    with open(backend.BACKEND_CONFIG) as f:
+    with open(backend.BACKEND_CONFIG_PATH) as f:
         config = json.load(f)
     print 'Starting the backend server on {0}:{1}'.format(
         config['host'],

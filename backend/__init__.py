@@ -5,14 +5,14 @@ import sys
 import gevent.monkey
 
 BACKEND_BASE_PATH = os.path.dirname(os.path.abspath(__file__))
-BACKEND_CONFIG = os.path.join(BACKEND_BASE_PATH, '../backend.config.json')
+BACKEND_CONFIG_PATH = os.path.join(BACKEND_BASE_PATH, '../backend.config.json')
 SIM_DATA_PATH = os.path.join(BACKEND_BASE_PATH, '../simData')
 DEFAULT_WEB_ROOT_PATH = os.path.join(BACKEND_BASE_PATH, '../public')
 START_URL = '/index.html'
 
 
 def get_simulator_path():
-    with open(BACKEND_CONFIG) as f:
+    with open(BACKEND_CONFIG_PATH) as f:
         config = json.load(f)
         simulator_path = config['simulator_path']
 
@@ -23,7 +23,7 @@ def get_simulator_path():
     else:
         # simulator_path is a relative path
         return os.path.join(
-            os.path.dirname(BACKEND_CONFIG),
+            os.path.dirname(BACKEND_CONFIG_PATH),
             simulator_path
         )
 

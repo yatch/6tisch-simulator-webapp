@@ -8,11 +8,11 @@ import os
 # backend causes gevent to get imported that prevents watchdog from
 # working correctly.
 BACKEND_ROOTDIR_PATH = os.path.dirname(__file__)
-BACKEND_CONFIG_PATH = os.path.join(
+BACKEND_CONFIG_PATH_PATH = os.path.join(
     BACKEND_ROOTDIR_PATH,
     '../backend.config.json'
 )
-with open(BACKEND_CONFIG_PATH, 'r') as f:
+with open(BACKEND_CONFIG_PATH_PATH, 'r') as f:
     config = json.load(f)
 SIM_ENGINE_MODULE_PATH = os.path.join(
     config['simulator_path'],
