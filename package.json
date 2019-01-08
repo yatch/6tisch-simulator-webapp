@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "concurrently": "^4.1.0",
+    "cytoscape-dagre": "^2.2.2",
     "vue": "^2.5.17",
     "vue-cytoscape": "^0.1.2",
     "vue-router": "^3.0.1",
