@@ -123,6 +123,7 @@ export default {
                                                          this.settings.tsch_slotframeLength)
       this.$store.dispatch('saveSettings',
                            Object.assign({}, this.settings))
+      this.$router.push('/')
     },
     makeOptions (list) {
       if (list === undefined) {
