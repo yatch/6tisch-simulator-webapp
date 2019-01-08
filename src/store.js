@@ -13,6 +13,7 @@ export default new Vuex.Store({
     simulator: undefined,
     currentSlotframeNumber: undefined,
     lastLogEvent: undefined,
+    lastRplParentChangeEvent: undefined,
     appTxNum: 0,
     appRxNum: 0,
     appDropNum: 0,
@@ -84,6 +85,14 @@ export default new Vuex.Store({
     incrementMoteNumCells (state, payload) { state.motes[payload.moteId].numCells += 1 },
     decrementMoteNumCells (state, payload) { state.motes[payload.moteId].numCells -= 1 },
 
+    setEUI64Addr (state, payload) { state.motes[payload.moteId].eui64Addr = payload.eui64Addr },
+    setRplParentId (state, payload) {
+      state.motes[payload.moteId].rplParentId = payload.rplParentId
+    },
+    setLastRplParentChangeEvent (state, payload) {
+      state.lastRplParentChangeEvent = payload.rplParentChangeEvent
+    },
+
     changeSimulatorState (state, payload) {
       state.simulator = payload.newState
     },
@@ -93,7 +102,11 @@ export default new Vuex.Store({
     },
     initMoteState (state) {
       const exec_numMotes = state.settings.exec_numMotes
-      state.motes = Array(exec_numMotes).fill().map(() => ({ numCells: 0 }))
+      state.motes = Array(exec_numMotes).fill().map(() => ({
+        eui64Addr: undefined,
+        numCells: 0,
+        rplParentId: undefined
+      }))
     }
   },
   actions: {
@@ -121,10 +134,29 @@ export default new Vuex.Store({
       if (logEvent._type === 'app.rx' ||
           logEvent._type === 'packet_dropped' && logEvent.packet.type === 'DATA') {
         context.dispatch('putAppPacketReceptionEvent', logEvent)
-      }
-      if (logEvent._type === 'tsch.add_cell' ||
+      } else if (logEvent._type === 'tsch.add_cell' ||
           logEvent._type === 'tsch.delete_cell') {
         context.dispatch('putTschCellAllocationEvent', logEvent)
+      } else if (logEvent._type === 'mac.add_addr' && logEvent.type === 'eui64') {
+        context.commit('setEUI64Addr', {
+          moteId: parseInt(logEvent._mote_id),
+          eui64Addr: logEvent.addr
+        })
+      } else if (logEvent._type === 'rpl.churn') {
+        const childId = logEvent._mote_id
+        let newParentId
+        if (logEvent.preferredParent != null) {
+          newParentId = context.state.motes.findIndex(mote => {
+            return mote.eui64Addr === logEvent.preferredParent
+          })
+        } else {
+          newParentId = undefined
+        }
+        const oldParentId = context.state.motes[childId].rplParentId
+        context.commit('setRplParentId', { moteId: logEvent._mote_id, rplParentId: newParentId })
+        context.commit('setLastRplParentChangeEvent', {
+          rplParentChangeEvent: { childId, oldParentId, newParentId }
+        })
       }
     },
     putAppPacketReceptionEvent (context, event) {
@@ -163,7 +195,16 @@ export default new Vuex.Store({
       context.dispatch('clearSimulationState')
       context.commit('initMoteState')
       context.commit('changeSimulatorState', { newState: 'running' })
-      window.eel.start(context.state.settings, ['app.rx', 'packet_dropped', 'tsch.add_cell', 'tsch.delete_cell'])(() => {
+      window.eel.start(
+        context.state.settings,
+        [
+          'app.rx',
+          'packet_dropped',
+          'tsch.add_cell',
+          'tsch.delete_cell',
+          'rpl.churn'
+        ]
+      )(() => {
         // a simulation is done
         context.commit('changeSimulatorState', { newState: 'ready' })
       })
@@ -196,6 +237,7 @@ export default new Vuex.Store({
       context.commit('resetAppLatencyMin')
       context.commit('resetTschLastCellAllocationEvent')
       context.commit('resetMoteState')
+      context.commit('setLastRplParentChangeEvent', { rplParentChangeEvent: undefined })
     }
   }
 })
