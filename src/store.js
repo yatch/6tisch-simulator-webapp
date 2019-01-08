@@ -14,6 +14,7 @@ export default new Vuex.Store({
     elapsedMinutes: undefined,
     lastLogEvent: undefined,
     lastRplParentChangeEvent: undefined,
+    lastTschCellAllocationEvent: undefined,
     appTxNum: 0,
     appRxNum: 0,
     appDropNum: 0,
@@ -79,12 +80,12 @@ export default new Vuex.Store({
       }
     },
 
-    resetTschLastCellAllocationEvent (state) { state.tschLastAllocationEvent = undefined },
-    updateTschLastCellAllocationEvent (state, payload) { state.tschLastAllocationEvent = payload.newCellAllocation },
+    resetTschLastCellCellAllocationEvent (state) { state.lastTschCellAllocationEvent = undefined },
+    updateTschLastCellCellAllocationEvent (state, payload) { state.lastTschCellAllocationEvent = payload.newCellAllocation },
     incrementMoteNumCells (state, payload) { state.motes[payload.moteId].numCells += 1 },
     decrementMoteNumCells (state, payload) { state.motes[payload.moteId].numCells -= 1 },
 
-    setEUI64Addr (state, payload) { state.motes[payload.moteId].eui64Addr = payload.eui64Addr },
+        setEUI64Addr (state, payload) { state.motes[payload.moteId].eui64Addr = payload.eui64Addr },
     setRplParentId (state, payload) {
       state.motes[payload.moteId].rplParentId = payload.rplParentId
     },
@@ -135,8 +136,8 @@ export default new Vuex.Store({
           logEvent._type === 'packet_dropped' && logEvent.packet.type === 'DATA') {
         context.dispatch('putAppPacketReceptionEvent', logEvent)
       } else if (logEvent._type === 'tsch.add_cell' ||
-          logEvent._type === 'tsch.delete_cell') {
-        context.dispatch('putTschCellAllocationEvent', logEvent)
+                 logEvent._type === 'tsch.delete_cell') {
+        context.dispatch('putTschCellCellAllocationEvent', logEvent)
       } else if (logEvent._type === 'mac.add_addr' && logEvent.type === 'eui64') {
         context.commit('setEUI64Addr', {
           moteId: parseInt(logEvent._mote_id),
@@ -174,7 +175,7 @@ export default new Vuex.Store({
         context.commit('incrementAppDropNum')
       }
     },
-    putTschCellAllocationEvent (context, event) {
+    putTschCellCellAllocationEvent (context, event) {
       const newCellAllocation = {
         type: event._type,
         moteId: event._mote_id,
@@ -184,7 +185,7 @@ export default new Vuex.Store({
         neighbor: event.neighbor,
         cellOptions: event.cellOptions
       }
-      context.commit('updateTschLastCellAllocationEvent', { newCellAllocation })
+      context.commit('updateTschLastCellCellAllocationEvent', { newCellAllocation })
       if (newCellAllocation.type === 'tsch.add_cell') {
         context.commit('incrementMoteNumCells', { moteId: newCellAllocation.moteId })
       } else if (newCellAllocation.type === 'tsch.add_cell') {
@@ -222,6 +223,7 @@ export default new Vuex.Store({
     abortSimulation (context) {
       window.eel.abort()(() => {
         context.dispatch('clearSimulationState')
+        context.commit('changeSimulatorState', { newState: 'aborted' })
         context.commit('changeSimulatorState', { newState: 'ready' })
       })
     },
@@ -235,7 +237,7 @@ export default new Vuex.Store({
       context.commit('resetAppLatencyNumRecord')
       context.commit('resetAppLatencyMax')
       context.commit('resetAppLatencyMin')
-      context.commit('resetTschLastCellAllocationEvent')
+      context.commit('resetTschLastCellCellAllocationEvent')
       context.commit('resetMoteState')
       context.commit('setLastRplParentChangeEvent', { rplParentChangeEvent: undefined })
     }

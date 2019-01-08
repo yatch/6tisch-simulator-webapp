@@ -8,6 +8,9 @@
   </v-layout>
   <v-layout align-space-around justify-space-around row fill-height>
     <RplTopology/>
+    </v-layout>
+  <v-layout align-space-around justify-space-around row fill-height>
+    <TschSchedule/>
   </v-layout>
 </v-container>
 </template>
@@ -18,6 +21,7 @@ import OverallE2ELatency from '@/components/OverallE2ELatency.vue'
 import SlotframeOccupancy from '@/components/SlotframeOccupancy.vue'
 import SimController from '@/components/SimController.vue'
 import RplTopology from '@/components/RplTopology.vue'
+import TschSchedule from '@/components/TschSchedule.vue'
 
 export default {
   components: {
@@ -25,7 +29,8 @@ export default {
     OverallE2ELatency,
     SlotframeOccupancy,
     SimController,
-    RplTopology
+    RplTopology,
+    TschSchedule
   }
 }
 </script>
