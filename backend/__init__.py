@@ -28,13 +28,6 @@ def get_simulator_path():
         )
 
 
-def get_sim_data_path():
-    return os.path.join(
-        get_simulator_path(),
-        'bin/simData'
-    )
-
-
 # add the path of the simulator source directory to Python module
 # search path list so that SimEngine and other relevant modules can be
 # imported

@@ -126,7 +126,7 @@ def start(settings, log_notification_filter='all'):
         sim_settings = SimSettings.SimSettings(
             cpuID        = 0,
             run_id       = 0,
-            log_root_dir = backend.get_sim_data_path(),
+            log_root_dir = backend.SIM_DATA_PATH,
             **settings
         )
         start_time = time.time()
