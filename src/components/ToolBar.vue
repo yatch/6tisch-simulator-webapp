@@ -12,7 +12,7 @@
     <span>{{ connectionStatus }}</span>
   </v-tooltip>
   <v-spacer></v-spacer>
-  <v-toolbar-side-icon @click.stop="toggleNavigationDrawer()"></v-toolbar-side-icon>
+  <v-toolbar-side-icon :disabled="ready === false" @click.stop="toggleNavigationDrawer()"></v-toolbar-side-icon>
 </v-toolbar>
 </template>
 
@@ -20,7 +20,9 @@
 export default {
   computed: {
     navigationDrawer () { return this.$store.getters['app/navigationDrawer'] },
+    operationalStatus () { return this.$store.getters['simulator/operationalStatus'] },
     connectionStatus () { return this.$store.getters['simulator/connectionStatus'] },
+    ready () { return this.operationalStatus === 'ready' },
     color () {
       if (this.connectionStatus === 'connected') {
         return 'success'

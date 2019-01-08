@@ -57,8 +57,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-      <v-btn @click.stop="loadSettings()">Reset</v-btn>
-      <v-btn @click.stop="saveSettings()" color="info">Save</v-btn>
+          <v-btn @click.stop="loadSettings()" color="error">Reset</v-btn>
+          <v-btn @click.stop="openDashBoard()" color="">Cancel</v-btn>
+          <v-btn @click.stop="saveSettings()" color="primary">Save</v-btn>
     </v-card-actions>
   </v-card>
   </v-flex>
@@ -125,7 +126,7 @@ export default {
                                                          this.settings.tsch_slotframeLength)
       this.$store.dispatch('simulator/saveSettings',
                            Object.assign({}, this.settings))
-      this.$router.push('/')
+      this.openDashBoard()
     },
     makeOptions (list) {
       if (list === undefined) {
@@ -133,6 +134,9 @@ export default {
       } else {
         return list.map(x => ({ text: x, value: x}))
       }
+    },
+    openDashBoard () {
+      this.$router.push('/')
     }
   }
 }

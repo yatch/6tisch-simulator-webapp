@@ -14,6 +14,9 @@
     <v-btn :disabled="running === false && paused === false" @click.stop="abortSimulation()" icon outline color="primary">
       <v-icon>stop</v-icon>
     </v-btn>
+    <v-btn :disabled="ready === false" @click.stop="openConfigurator()" icon outline color="primary">
+      <v-icon>settings</v-icon>
+    </v-btn>
   </v-card-actions>
 </v-card>
 </template>
@@ -57,6 +60,9 @@ export default {
     },
     abortSimulation () {
       this.$store.dispatch('simulator/abort')
+    },
+    openConfigurator () {
+      this.$router.push('/config')
     }
   }
 }
