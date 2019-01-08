@@ -50,7 +50,7 @@ export default {
         this.reload()
       }
     },
-    connectionState (newState, oldState) {
+    connectionStatus (newState, oldState) {
       if (newState === 'disconnected' && oldState === 'connected') {
         this.dialog = true
         this.timer = setInterval(() => { this.timePassed += 1 }, 1000)
@@ -58,7 +58,9 @@ export default {
     }
   },
   computed: {
-    connectionState () { return this.$store.state.connection },
+    connectionStatus () {
+      return this.$store.getters['simulation/connectionStatus']
+    },
     remaining () { return this.timeToReload - this.timePassed }
   },
   methods: {

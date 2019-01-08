@@ -19,29 +19,77 @@
 
 <script>
 export default {
+  data () {
+    return {
+      sum: 0,
+      numRecords: 0,
+      max: undefined,
+      min: undefined
+    }
+  },
+  watch: {
+    operationalStatus (newState, oldState) {
+      if (newState === 'running' && oldState === 'ready') {
+        this.reset()
+      }
+    },
+    lastAppPacketEvent (event) {
+      if (event === undefined) {
+        // ignore
+        return
+      } else if (event.type === 'rx') {
+        const slotDuration = this.runningSettings.tsch_slotDuration
+        const latency = ((event.asn - event.packet.app.timestamp) *
+                         slotDuration)
+        this.sum += latency
+        this.numRecords += 1
+        if (this.max === undefined || this.max < latency) {
+          this.max = latency
+        }
+        if (this.min === undefined || latency < this.min) {
+          this.min = latency
+        }
+      }
+    }
+  },
   computed: {
-    appLatencySum () { return this.$store.state.appLatencySum },
-    appLatencyNumRecords () { return this.$store.state.appLatencyNumRecords },
+    operationalStatus () {
+      return this.$store.getters['simulator/operationalStatus']
+    },
+    lastAppPacketEvent () {
+      return this.$store.getters['log/lastAppPacketEvent']
+    },
+    runningSettings () {
+      return this.$store.getters['simulator/settings']
+    },
     appLatencyMax () {
-      if (this.$store.state.appLatencyMax === undefined) {
+      if (this.max === undefined) {
         return 'N/A'
       } else {
-        return this.$store.state.appLatencyMax.toFixed(2).toString()
+        return this.max.toFixed(2).toString()
       }
     },
     appLatencyMin () {
-      if (this.$store.state.appLatencyMin === undefined) {
+      if (this.min === undefined) {
         return 'N/A'
       } else {
-        return this.$store.state.appLatencyMin.toFixed(2).toString()
+        return this.min.toFixed(2).toString()
       }
     },
     appLatencyAvg () {
-      if (this.$store.state.appLatencyNumRecords === 0) {
+      if (this.numRecords === 0) {
         return 'N/A'
       } else {
-        return (this.appLatencySum / this.appLatencyNumRecords).toFixed(2).toString()
+        return (this.sum / this.numRecords).toFixed(2).toString()
       }
+    }
+  },
+  methods: {
+    reset () {
+      this.sum = 0
+      this.numRecords = 0
+      this.max = undefined
+      this.min = undefined
     }
   }
 }

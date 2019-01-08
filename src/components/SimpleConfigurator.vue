@@ -86,12 +86,14 @@ export default {
     runningSettings () { this.loadSettings() }
   },
   computed: {
-    runningSettings () { return this.$store.state.settings },
+    runningSettings () { return this.$store.getters['simulator/settings'] },
     availableSFs() {
-      return this.makeOptions(this.$store.state.availableSFs)
+      return this.makeOptions(this.$store.getters['simulator/availableSFs'])
     },
     availableConnectivities () {
-      return this.makeOptions(this.$store.state.availableConnectivities)
+      return this.makeOptions(
+        this.$store.getters['simulator/availableConnectivities']
+      )
     },
     dialog () {
       if (this.runningSettings !== undefined &&
@@ -121,7 +123,7 @@ export default {
                                                          60 /
                                                          this.settings.tsch_slotDuration /
                                                          this.settings.tsch_slotframeLength)
-      this.$store.dispatch('saveSettings',
+      this.$store.dispatch('simulator/saveSettings',
                            Object.assign({}, this.settings))
       this.$router.push('/')
     },

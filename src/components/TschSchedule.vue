@@ -29,7 +29,7 @@ export default {
   },
   data () {
     return {
-      two: null,
+      two: undefined,
       cells: [],
       canvasWidth: 800,
       canvasHeight: 140,
@@ -41,19 +41,24 @@ export default {
     }
   },
   mounted () {
-    this.two = new Two(
-      { width: this.canvasWidth, height: this.canvasHeight }
-    ).appendTo(document.getElementById('draw-shapes'))
+    this.createScheduleMatrix()
+    if (this.runningSettings !== undefined) {
+      this.initializeScheduleMatrix()
+    }
   },
   watch: {
-    simulatorState (newState, oldState) {
+    operationalStatus (newState, oldState) {
       if (newState === 'running' && oldState === 'ready') {
-        this.clearScheduleMatrix()
+        if (this.two === 'undefined') {
+          this.createScheduleMatrix()
+        } else {
+          this.clearScheduleMatrix()
+        }
       }
     },
     runningSettings (newSettings) {
       if (newSettings !== undefined) {
-        this.createScheduleMatrix()
+        this.initializeScheduleMatrix()
       }
     },
     lastTschCellAllocationEvent (event) {
@@ -63,37 +68,50 @@ export default {
       }
       const cell = this.cells[event.slotOffset][event.channelOffset]
       if (event.cellOptions.includes('TX')) {
-        if (event.type === 'tsch.add_cell') {
+        if (event.type === 'add') {
           this.updateNumTxCells(cell, cell.numTxCells + 1)
-        } else if (event.type === 'tsch.delete_cell') {
+        } else if (event.type === 'delete') {
           this.updateNumTxCells(cell, cell.numTxCells - 1)
         }
       }
     }
   },
   computed: {
-    simulatorState () { return this.$store.state.simulator },
-    runningSettings () { return this.$store.state.settings },
+    operationalStatus () {
+      return this.$store.getters['simulator/operationalStatus']
+    },
+    runningSettings () { return this.$store.getters['simulator/settings'] },
+    lastTschCellAllocationEvent () {
+      return this.$store.getters['log/lastTschCellAllocationEvent']
+    },
     numSlots () {
-      if (this.$store.state.settings === undefined) {
+      if (this.runningSettings === undefined) {
         return 1
       } else {
         return this.runningSettings.tsch_slotframeLength
       }
     },
     numChannels () {
-      if (this.$store.state.settings === undefined) {
+      if (this.runningSettings === undefined) {
         return 1
       } else {
         return this.runningSettings.phy_numChans
       }
-    },
-    lastTschCellAllocationEvent () { return this.$store.state.lastTschCellAllocationEvent }
+    }
   },
   methods: {
     createScheduleMatrix () {
-      this.two.clear()
+      this.two = new Two(
+        { width: this.canvasWidth, height: this.canvasHeight }
+      ).appendTo(document.getElementById('draw-shapes'))
       this.cells = []
+    },
+    initializeScheduleMatrix () {
+      if (this.two === undefined) {
+        this.createScheduleMatrix()
+      } else {
+        this.two.clear()
+      }
 
       Array.from({length: this.numSlots}, (v, slotOffset) => {
         this.cells[slotOffset] = []

@@ -5,9 +5,9 @@
       <v-card-title>Overall E2E PDR</v-card-title>
       <v-card-text>
         <p class="title">PDR: {{ pdr }}</p>
-        <div>Send: {{ appTxNum }}</div>
-        <div>Recv: {{ appRxNum }}</div>
-        <div>Drop: {{ appDropNum }}</div>
+        <div>Send: {{ numTx }}</div>
+        <div>Recv: {{ numRx }}</div>
+        <div>Drop: {{ numDrop }}</div>
       </v-card-text>
     </div>
     <span>
@@ -19,16 +19,53 @@
 
 <script>
 export default {
+  data () {
+    return {
+      numTx: 0,
+      numRx: 0,
+      numDrop: 0
+    }
+  },
+  watch: {
+    operationalStatus (newState, oldState) {
+      if (newState === 'running' && oldState === 'ready') {
+        this.reset()
+      }
+    },
+    lastAppPacketEvent (event) {
+      if (event === undefined) {
+        // ignore
+        return
+      } else {
+        this.numTx += 1
+        if (event.type === 'rx') {
+          this.numRx += 1
+        } else {
+          this.numDrop += 1
+        }
+      }
+    }
+  },
   computed: {
-    appTxNum () { return this.$store.state.appTxNum },
-    appRxNum () { return this.$store.state.appRxNum },
-    appDropNum () { return this.$store.state.appDropNum },
+    operationalStatus () {
+      return this.$store.getters['simulator/operationalStatus']
+    },
+    lastAppPacketEvent () {
+      return this.$store.getters['log/lastAppPacketEvent']
+    },
     pdr () {
-      if (this.appTxNum === 0) {
+      if (this.numTx === 0) {
         return 'N/A'
       } else {
-        return (this.appRxNum / this.appTxNum * 100).toFixed(3).toString() + '%'
+        return (this.numRx / this.numTx * 100).toFixed(3).toString() + '%'
       }
+    }
+  },
+  methods: {
+    reset () {
+      this.numTx = 0
+      this.numRx = 0
+      this.numDrop = 0
     }
   }
 }

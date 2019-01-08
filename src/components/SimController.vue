@@ -22,7 +22,7 @@
 export default {
   computed: {
     elapsedMinutes () {
-      return this.$store.state.elapsedMinutes
+      return this.$store.getters['log/elapsedMinutes']
     },
     elapsedTime () {
       if (this.elapsedMinutes === undefined) {
@@ -34,29 +34,29 @@ export default {
         return h + 'h' + m + 'm'
       }
     },
-    ready () {
-      return (this.$store.state.simulator === 'ready' &&
-              this.$store.state.settings !== undefined)
+    operationalStatus () {
+      return this.$store.getters['simulator/operationalStatus']
     },
-    paused () { return this.$store.state.simulator === 'paused' },
-    running () { return this.$store.state.simulator === 'running' }
+    ready () { return this.operationalStatus === 'ready' },
+    paused () { return this.operationalStatus === 'paused' },
+    running () { return this.operationalStatus === 'running' }
   },
   methods: {
     startSimulation () {
       if (this.paused === true) {
-        this.$store.dispatch('resumeSimulation')
+        this.$store.dispatch('simulator/resume')
       } else {
-        this.$store.dispatch('startSimulation')
+        this.$store.dispatch('simulator/start')
       }
     },
     pauseSimulation () {
-      this.$store.dispatch('pauseSimulation')
+      this.$store.dispatch('simulator/pause')
     },
     resumeSimulation () {
-      this.$store.dispatch('resumeSimulation')
+      this.$store.dispatch('simulator/resume')
     },
     abortSimulation () {
-      this.$store.dispatch('abortSimulation')
+      this.$store.dispatch('simulator/abort')
     }
   }
 }

@@ -79,7 +79,7 @@ export default {
     }
   },
   watch: {
-    simulatorState (newState, oldState) {
+    operationalStatus (newState, oldState) {
       if (newState === 'running' && oldState === 'ready') {
         this.$cytoscape.instance.then(cy => {
           cy.elements('*').remove()
@@ -129,8 +129,12 @@ export default {
     }
   },
   computed: {
-    simulatorState () { return this.$store.state.simulator },
-    lastRplParentChangeEvent () { return this.$store.state.lastRplParentChangeEvent }
+    operationalStatus () {
+      return this.$store.getters['simulator/operationalStatus']
+    },
+    lastRplParentChangeEvent () {
+      return this.$store.getters['log/lastRplParentChangeEvent']
+    },
   }
 }
 </script>

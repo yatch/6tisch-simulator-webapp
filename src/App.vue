@@ -32,23 +32,23 @@ export default {
       // fired. checking window.eel in an DOMContentLoaded event
       // handler may work better than doing that in created() directly
       if (window.eel === undefined) {
-        this.$store.dispatch('changeConnectionState', 'disconnected')
+        this.$store.dispatch('simulator/disconnect', 'disconnected')
       } else {
-        this.$store.dispatch('changeConnectionState', 'connected')
+        this.$store.dispatch('simulator/connect', 'connected')
         window.eel._websocket.addEventListener(
           'close',
           () => {
-            this.$store.dispatch('changeConnectionState', 'disconnected')
+            this.$store.dispatch('simulator/disconnect', 'disconnected')
           }
         )
         window.eel.get_default_settings()(defaultSettings => {
-          this.$store.dispatch('saveSettings', defaultSettings)
+          this.$store.dispatch('simulator/saveSettings', defaultSettings)
         })
         window.eel.get_available_scheduling_functions()(availableSFs => {
-          this.$store.dispatch('saveAvailableSFs', availableSFs)
+          this.$store.dispatch('simulator/setAvailableSFs', availableSFs)
         })
         window.eel.get_available_connectivities()(availableConnectivities => {
-          this.$store.dispatch('saveAvailableConnectivities',
+          this.$store.dispatch('simulator/setAvailableConnectivities',
                                availableConnectivities)
         })
       }

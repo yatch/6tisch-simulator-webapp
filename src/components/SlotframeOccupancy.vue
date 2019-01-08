@@ -17,23 +17,61 @@
 
 <script>
 export default {
+  data() {
+    return {
+      numCellsArray: [],
+      maxNumCells: undefined,
+      minNumCells: undefined
+    }
+  },
+  watch: {
+    operationalStatus (newStatus, oldStatus) {
+      if (newStatus === 'running' && oldStatus === 'ready') {
+        this.reset()
+      }
+    },
+    lastTschCellAllocationEvent (event) {
+      if (event === undefined) {
+        // ignore
+        return
+      }
+      if (event.type === 'add') {
+        this.numCellsArray[event.moteId] += 1
+      } else {
+        this.numCellsArray[event.moteId] -= 1
+      }
+      this.maxNumCells = Math.max(...this.numCellsArray)
+      this.minNumCells = Math.min(...this.numCellsArray)
+    }
+  },
   computed: {
-    numCellsArray () {
-      return this.$store.state.motes.map(mote => mote.numCells)
+    operationalStatus () {
+      return this.$store.getters['simulator/operationalStatus']
+    },
+    runningSettings () { return this.$store.getters['simulator/settings'] },
+    lastTschCellAllocationEvent () {
+      return this.$store.getters['log/lastTschCellAllocationEvent']
     },
     max () {
-      if (this.$store.state.motes.length === 0) {
+      if (this.maxNumCells === undefined) {
         return 'N/A'
       } else {
-        return Math.max.apply(null, this.numCellsArray)
+        return this.maxNumCells
       }
     },
     min () {
-      if (this.$store.state.motes.length === 0) {
+      if (this.minNumCells === undefined) {
         return 'N/A'
       } else {
-        return Math.min.apply(null, this.numCellsArray)
+        return this.minNumCells
       }
+    }
+  },
+  methods: {
+    reset () {
+      this.numCellsArray = Array(this.runningSettings.exec_numMotes).fill(0)
+      this.maxNumCells = undefined
+      this.minNumCells = undefined
     }
   }
 }
