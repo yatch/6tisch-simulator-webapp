@@ -4,6 +4,7 @@ export default {
     lastRplParentChangeEvent: undefined,
     lastTschCellAllocationEvent: undefined,
     lastAppPacketEvent: undefined,
+    lastPacketDropEvent: undefined,
     elapsedMinutes: undefined,
     motes: []
   },
@@ -13,6 +14,7 @@ export default {
       return state.lastTschCellAllocationEvent
     },
     lastAppPacketEvent (state) { return state.lastAppPacketEvent },
+    lastPacketDropEvent (state) { return state.lastPacketDropEvent },
     elapsedMinutes (state) { return state.elapsedMinutes}
   },
   mutations: {
@@ -70,6 +72,18 @@ export default {
         }
       }
     },
+    updateLastPacketDropEvent (state, event) {
+      if (event === undefined) {
+        state.lastPacketDropEvent = undefined
+      } else {
+        state.lastPacketDropEvent = {
+          'asn': event._asn,
+          'moteId': event._mote_id,
+          'packetType': event.packet.type,
+          'dropReason': event.reason,
+        }
+      }
+    },
     updateElapsedMinutes (state, value) { state.elapsedMinutes = value },
     updateMoteAddress (state, event) {
       if (event === undefined) {
@@ -97,10 +111,13 @@ export default {
     put ({ commit }, event) {
       if (event._type === '_backend.tick.minute') {
         commit('updateElapsedMinutes', event.currentValue)
-      } else if (event._type === 'app.rx' ||
-                 (event._type === 'packet_dropped' &&
-                  event.packet.type === 'DATA')) {
+      } else if (event._type === 'app.rx') {
         commit('updateLastAppPacketEvent', event)
+      } else if (event._type === 'packet_dropped') {
+        if (event.packet.type === 'DATA') {
+          commit('updateLastAppPacketEvent', event)
+        }
+        commit('updateLastPacketDropEvent', event)
       } else if (event._type === 'mac.add_addr' && event.type === 'eui64') {
         commit('updateMoteAddress', event)
       } else if (event._type === 'tsch.add_cell' ||
@@ -113,6 +130,7 @@ export default {
     reset ( { commit, rootGetters }) {
       commit('updateElapsedMinutes', 0)
       commit('updateLastAppPacketEvent', undefined)
+      commit('updateLastPacketDropEvent', undefined)
       commit('updateLastTschCellAllocationEvent', undefined)
       commit('updateLastRplParentChangeEvent', undefined)
       commit('initializeMotes', rootGetters['simulator/settings'].exec_numMotes)

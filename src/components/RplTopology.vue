@@ -3,7 +3,7 @@
     <v-tooltip bottom>
       <div slot="activator">
         <v-card-title>RPL Topology</v-card-title>
-        <cytoscape :config="config" :preConfig="preConfig" style="width: 100%; height: 200px"/>
+        <cytoscape :config="config" :preConfig="preConfig" style="width: 100%; height: 250px"/>
       </div>
       <span>Current view of the RPL Topology</span>
     </v-tooltip>
