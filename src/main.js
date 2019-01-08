@@ -3,6 +3,7 @@ import './plugins/vuetify'
 import App from './App.vue'
 import store from './store'
 import router from './router'
+import './plugins/cytoscape'
 
 Vue.config.productionTip = false
 
