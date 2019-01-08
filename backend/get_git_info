@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+import json
+import os
+import sys
+
+import git
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+import backend
+
+webapp_git_repo = git.Repo(os.path.join(backend.BACKEND_BASE_PATH, '..'))
+with open(backend.BACKEND_CONFIG_PATH) as f:
+    config = json.load(f)
+    simulator_git_repo = git.Repo(
+        os.path.join(
+            os.path.dirname(backend.BACKEND_CONFIG_PATH),
+            config['simulator_path']
+        )
+    )
+print json.dumps({
+    'webapp': {
+        'repo': os.path.dirname(webapp_git_repo.git_dir),
+        'branch': webapp_git_repo.active_branch.name,
+        'short_hash': webapp_git_repo.head.object.hexsha[:7]
+    },
+    'simulator': {
+        'repo': os.path.dirname(simulator_git_repo.git_dir),
+        'branch': simulator_git_repo.active_branch.name,
+        'short_hash': simulator_git_repo.head.object.hexsha[:7]
+    }
+})

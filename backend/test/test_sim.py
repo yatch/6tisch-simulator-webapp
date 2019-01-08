@@ -1,5 +1,6 @@
 import json
 import os
+import subprocess
 
 import eel
 import gevent
@@ -232,3 +233,43 @@ def test_return_values(sim_action, return_type):
         assert ret_val['trace'] is not None
 
     assert ret_val['status'] == return_type
+
+
+@pytest.fixture(params=['webapp', 'simulator'])
+def target_git_repo(request):
+    return request.param
+
+
+def test_get_git_info(target_git_repo):
+    if target_git_repo == 'webapp':
+        git_dir = os.path.join(backend.BACKEND_BASE_PATH, '..', '.git')
+    else:
+        with open(backend.BACKEND_CONFIG_PATH) as f:
+            config = json.load(f)
+            git_dir = os.path.join(
+                os.path.dirname(backend.BACKEND_CONFIG_PATH),
+                config['simulator_path'],
+                '.git'
+            )
+
+    branch_name = subprocess.check_output([
+        'git',
+        '--git-dir',
+        git_dir,
+        'rev-parse',
+        '--abbrev-ref',
+        'HEAD'
+    ]).strip()
+
+    short_hash = subprocess.check_output([
+        'git',
+        '--git-dir',
+        git_dir,
+        'rev-parse',
+        '--short=7',
+        'HEAD'
+    ]).strip()
+
+    ret = backend.sim.get_git_info()
+    assert ret[target_git_repo]['branch'] == branch_name
+    assert ret[target_git_repo]['short_hash'] == short_hash

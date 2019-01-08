@@ -4,6 +4,7 @@ import re
 import time
 import types
 import traceback
+import subprocess
 
 import eel
 import gevent
@@ -74,6 +75,18 @@ def get_available_scheduling_functions():
         re.sub(r'SchedulingFunction(\w+)', r'\1', elem),
         ret_val
     )
+
+
+@eel.expose
+def get_git_info():
+    # to prevent memory leak, we will have a separate process to get
+    # information of the Git repositories with gitpython:
+    # https://gitpython.readthedocs.io/en/stable/intro.html#limitations
+    get_git_info_cmd_path = os.path.join(
+        backend.BACKEND_BASE_PATH,
+        'get_git_info'
+    )
+    return json.loads(subprocess.check_output([get_git_info_cmd_path]))
 
 
 @eel.expose
