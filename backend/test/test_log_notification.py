@@ -61,7 +61,10 @@ def test_log(log_notification_filter, log_events):
         # generated during the simulation. to make the test simple, we
         # compare only the number of log events with the number of
         # lines of the log file
-        num_log_events = len(log_events)
+        num_log_events = len([
+            event for event in log_events
+            if event['_type'].startswith('_backend') is False
+        ])
         # subtract by one because the very first line of the log file
         # is the 'config' type, that is not recorded through
         # SimLog.log() method.

@@ -1,4 +1,5 @@
 import json
+import math
 import os
 import re
 import time
@@ -30,6 +31,7 @@ RETURN_STATUS_SUCCESS = 'success'
 RETURN_STATUS_FAILURE = 'failure'
 
 _sim_engine = None
+_elapsed_minutes = 0
 
 
 # exported functions
@@ -117,6 +119,7 @@ def get_available_connectivities():
 @eel.expose
 def start(settings, log_notification_filter='all'):
     global _sim_engine
+    global _elapsed_minutes
 
     sim_settings = None
     sim_log = None
@@ -146,6 +149,7 @@ def start(settings, log_notification_filter='all'):
         _overwrite_sim_log_log(log_notification_filter)
 
         _sim_engine = SimEngine.SimEngine()
+        _elapsed_minutes = 0
         _overwrite_sim_engine_actionEndSlotframe()
 
         # start and wait until the simulation ends
@@ -243,7 +247,18 @@ def _overwrite_sim_engine_actionEndSlotframe():
     _sim_engine.original_actionEndSlotframe = _sim_engine._actionEndSlotframe
 
     def _new_actionEndSlotframe(self):
+        global _elapsed_minutes
+
         self.original_actionEndSlotframe()
+        asn = _sim_engine.getAsn()
+        minutes = math.floor(asn * _sim_engine.settings.tsch_slotDuration / 60)
+        if _elapsed_minutes < minutes:
+           _elapsed_minutes = minutes
+           eel.notifyLogEvent({
+               '_type': '_backend.tick.minute',
+               '_asn': asn,
+               'currentValue': _elapsed_minutes
+           })
         # we need to yield the CPU explicitly for other tasks because
         # threading is monkey-patched by gevent. see __init__.py.
         gevent.sleep(GEVENT_SLEEP_SECONDS_IN_SIM_ENGINE)
@@ -289,6 +304,7 @@ def _overwrite_sim_log_log(log_notification_filter):
 
 def _destroy_sim():
     global _sim_engine
+    global _elapsed_minutes
 
     sim_log = SimLog.SimLog()
     connectivity = _sim_engine.connectivity
@@ -300,3 +316,4 @@ def _destroy_sim():
     sim_settings.destroy()
 
     _sim_engine = None
+    _elapsed_minutes = 0
