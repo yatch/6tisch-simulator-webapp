@@ -13,6 +13,7 @@
              window.eel = eel
              eel.expose(notifyLogEvent)
              function notifyLogEvent (logEvent) {
+                 window.vm.$store.dispatch('putLogEvent', logEvent)
              }
          } catch (e) {
              if (e instanceof ReferenceError) {
