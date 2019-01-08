@@ -11,7 +11,7 @@ export default new Vuex.Store({
     availableSFs: undefined,
     availableConnectivities: undefined,
     simulator: undefined,
-    currentSlotframeNumber: undefined,
+    elapsedMinutes: undefined,
     lastLogEvent: undefined,
     lastRplParentChangeEvent: undefined,
     appTxNum: 0,
@@ -39,12 +39,11 @@ export default new Vuex.Store({
     saveAvailableConnectivities (state, payload) {
       state.availableConnectivities = payload.availableConnectivities
     },
-    updateCurrentSlotframeNumber (state, payload) {
-      if (payload.logEvent === undefined) {
-        state.currentSlotframeNumber = undefined
+    updateElapsedMinutes (state, payload) {
+      if (payload.currentValue === undefined) {
+        state.elapsedMinutes = undefined
       } else {
-        const slotframeLength = state.settings.tsch_slotframeLength
-        state.currentSlotframeNumber = payload.logEvent._asn / slotframeLength
+        state.elapsedMinutes = payload.currentValue
       }
     },
     setLastLogEvent (state, payload) {
@@ -129,9 +128,10 @@ export default new Vuex.Store({
       context.commit('saveAvailableConnectivities', { availableConnectivities })
     },
     putLogEvent (context, logEvent) {
-      context.commit('updateCurrentSlotframeNumber', { logEvent })
       context.commit('setLastLogEvent', { logEvent })
-      if (logEvent._type === 'app.rx' ||
+      if (logEvent._type === '_backend.tick.minute') {
+        context.commit('updateElapsedMinutes', { currentValue: logEvent.currentValue })
+      } else if (logEvent._type === 'app.rx' ||
           logEvent._type === 'packet_dropped' && logEvent.packet.type === 'DATA') {
         context.dispatch('putAppPacketReceptionEvent', logEvent)
       } else if (logEvent._type === 'tsch.add_cell' ||
@@ -226,7 +226,7 @@ export default new Vuex.Store({
       })
     },
     clearSimulationState (context) {
-      context.commit('updateCurrentSlotframeNumber', { logEvent: undefined })
+      context.commit('updateElapsedMinutes', { currentValue: undefined })
       context.commit('setLastLogEvent', { logEvent: undefined })
       context.commit('resetAppTxNum')
       context.commit('resetAppRxNum')

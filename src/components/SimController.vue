@@ -21,26 +21,17 @@
 <script>
 export default {
   computed: {
-    runningSettings () {
-      return this.$store.state.settings
-    },
-    slotDuration () {
-      return this.runningSettings.tsch_slotDuration
-    },
-    slotframeLength () {
-      return this.runningSettings.tsch_slotframeLength
+    elapsedMinutes () {
+      return this.$store.state.elapsedMinutes
     },
     elapsedTime () {
-      if (this.$store.state.currentSlotframeNumber === undefined) {
-        return '0:00:00'
+      if (this.elapsedMinutes === undefined) {
+        return '0h00m'
       } else {
-        const seconds = (this.$store.state.currentSlotframeNumber *
-                         this.slotframeLength *
-                         this.slotDuration)
-        const h = Math.floor(seconds / 3600).toString()
-        const m = ('0' + Math.floor(seconds % 3600 / 60).toString()).slice(-2)
-        const s = ('0' + Math.floor(seconds % 60).toString()).slice(-2)
-        return h + ':' + m + ':' + s
+        const minutes = this.elapsedMinutes
+        const h = Math.floor(minutes / 60).toString()
+        const m = ('0' + Math.floor(minutes % 60).toString()).slice(-2)
+        return h + 'h' + m + 'm'
       }
     },
     ready () {
