@@ -1,6 +1,6 @@
 <template>
 <div>
-  <v-navigation-drawer fixed v-model="show" mobile-break-point="false" right app>
+  <v-navigation-drawer fixed temporary v-model="show" mobile-break-point="false" right app>
     <v-list dense>
       <v-list-tile to="/" @click.stop="toggleNavigationDrawer()">
         <v-list-tile-action>
