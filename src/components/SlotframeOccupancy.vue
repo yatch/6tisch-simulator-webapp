@@ -1,18 +1,33 @@
 <template>
-<v-card width="200px">
-  <v-tooltip bottom>
-    <div slot="activator">
-      <v-card-title>Slotframe Occupancy</v-card-title>
-      <v-card-text>
-        <p><span class="title">Max: {{ max }} </span>cells</p>
-        <p><span class="title">Min: {{ min }} </span>cells</p>
-      </v-card-text>
-    </div>
-    <span>
-      The number of scheduled cells in one slotframe.
-    </span>
-  </v-tooltip>
-</v-card>
+<v-flex xs3>
+  <v-card height="100%">
+    <v-container>
+      <v-layout>
+        <v-flex class="subheading">Slotframe Occupancy:</v-flex>
+      </v-layout>
+      <v-layout>
+        <v-flex>
+          <v-container>
+            <v-layout class="title" my-2 align-end>
+              <v-flex xs1 offset-xs2>Max</v-flex>
+              <v-flex xs5 offset-xs2 text-xs-right>
+                {{ max }}
+                <span v-if="printCells" class="body-1">cells</span>
+              </v-flex>
+            </v-layout>
+            <v-layout class="title" my-2 align-end>
+              <v-flex xs1 offset-xs2>Min</v-flex>
+              <v-flex xs5 offset-xs2 text-xs-right>
+                {{ min }}
+                <span v-if="printCells" class="body-1">cells</span>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-card>
+</v-flex>
 </template>
 
 <script>
@@ -51,6 +66,13 @@ export default {
     runningSettings () { return this.$store.getters['simulator/settings'] },
     lastTschCellAllocationEvent () {
       return this.$store.getters['log/lastTschCellAllocationEvent']
+    },
+    printCells () {
+      if (this.maxNumCells === undefined) {
+        return false
+      } else {
+        return true
+      }
     },
     max () {
       if (this.maxNumCells === undefined) {

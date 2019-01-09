@@ -1,20 +1,42 @@
 <template>
-<v-card width="200px">
-  <v-tooltip bottom>
-    <div slot="activator">
-      <v-card-title>Overall E2E PDR</v-card-title>
-      <v-card-text>
-        <p class="title">PDR: {{ pdr }}</p>
-        <div>Send: {{ numTx }}</div>
-        <div>Recv: {{ numRx }}</div>
-        <div>Drop: {{ numDrop }}</div>
-      </v-card-text>
-    </div>
-    <span>
-      End-to-end Packet Delivery Ratio in the entire simulation
-    </span>
-  </v-tooltip>
-</v-card>
+<v-flex xs3>
+  <v-card height="100%">
+    <v-container>
+      <v-layout>
+        <v-flex class="subheading">Overall E2E PDR:</v-flex>
+      </v-layout>
+      <v-layout>
+        <v-flex>
+          <v-container>
+            <v-layout class="title" justify-space-around my-2>
+              <v-flex xs3 text-xs-right>
+                <span class="title">{{ pdr }}</span>
+              </v-flex>
+            </v-layout>
+            <v-layout>
+              <v-flex xs12>
+                <v-container pa-0 ma-0>
+                  <v-layout justify-center>
+                    <v-flex xs1>Send:</v-flex>
+                    <v-flex xs6 text-xs-right>{{ numTx }}</v-flex>
+                  </v-layout>
+                  <v-layout justify-center>
+                    <v-flex xs1>Recv:</v-flex>
+                    <v-flex xs6 text-xs-right>{{ numRx }}</v-flex>
+                  </v-layout>
+                  <v-layout justify-center>
+                    <v-flex xs1>Drop:</v-flex>
+                    <v-flex xs6 text-xs-right>{{ numDrop }}</v-flex>
+                  </v-layout>
+                </v-container>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-card>
+</v-flex>
 </template>
 
 <script>

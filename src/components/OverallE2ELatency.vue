@@ -1,20 +1,42 @@
 <template>
-<v-card width="200px">
-  <v-tooltip bottom>
-    <div slot="activator">
-      <v-card-title>Overall E2E Latency</v-card-title>
-      <v-card-text>
-        <p><span class="title">Avg: {{ appLatencyAvg }} </span>s</p>
-        <p><span class="title">Max: {{ appLatencyMax }} </span>s</p>
-        <p><span class="title">Min: {{ appLatencyMin }} </span>s</p>
-      </v-card-text>
-    </div>
-    <span>
-      Average/Maximum/Minimum end-to-end latency of upward application
-      packets in the entire simulation
-    </span>
-  </v-tooltip>
-</v-card>
+<v-flex xs3>
+  <v-card height="100%">
+    <v-container>
+      <v-layout>
+        <v-flex class="subheading">
+          Overall E2E Latency:
+        </v-flex>
+      </v-layout>
+      <v-layout>
+        <v-flex>
+          <v-container>
+            <v-layout class="title" justify-space-around my-2>
+              <v-flex xs2>Avg</v-flex>
+              <v-flex xs6 text-xs-right>
+                {{ appLatencyAvg }}
+                <span v-if="showAvgTrailingS">s</span>
+              </v-flex>
+            </v-layout>
+            <v-layout class="title" justify-space-around my-2>
+              <v-flex xs2>Max</v-flex>
+              <v-flex xs6 text-xs-right>
+                {{ appLatencyMax }}
+                <span v-if="showMaxTrailingS">s</span>
+              </v-flex>
+            </v-layout>
+            <v-layout class="title" justify-space-around my-2>
+              <v-flex xs2>Min</v-flex>
+              <v-flex xs6 text-xs-right>
+                {{ appLatencyMin }}
+                <span v-if="showMinTrailingS">s</span>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-card>
+</v-flex>
 </template>
 
 <script>
@@ -82,7 +104,10 @@ export default {
       } else {
         return (this.sum / this.numRecords).toFixed(2).toString()
       }
-    }
+    },
+    showMaxTrailingS () { return this.appLatencyMax !== 'N/A' },
+    showMinTrailingS () { return this.appLatencyMin !== 'N/A' },
+    showAvgTrailingS () { return this.appLatencyAvg !== 'N/A' }
   },
   methods: {
     reset () {

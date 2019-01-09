@@ -1,13 +1,14 @@
 <template>
-  <v-card width="300px">
-    <v-tooltip bottom>
-      <div slot="activator">
-        <v-card-title>RPL Topology</v-card-title>
-        <cytoscape :config="config" :preConfig="preConfig" style="width: 100%; height: 250px"/>
-      </div>
-      <span>Current view of the RPL Topology</span>
-    </v-tooltip>
+<v-flex xs4>
+  <v-card>
+    <v-container>
+      <v-layout>
+        <v-flex class="body-2">RPL Topology</v-flex>
+      </v-layout>
+      <cytoscape :config="config" :preConfig="preConfig" style="width: 100%; height: 230px"/>
+    </v-container>
   </v-card>
+</v-flex>
 </template>
 
 <script>

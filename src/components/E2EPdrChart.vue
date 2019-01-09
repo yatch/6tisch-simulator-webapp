@@ -1,8 +1,14 @@
 <template>
-<v-card width="300px">
-  <v-card-title>E2E PDR Trend (in last 10min)</v-card-title>
-  <apexchart type="line" height="250px" :options="options" :series="series"/>
-</v-card>
+<v-flex xs4>
+  <v-card>
+    <v-container>
+      <v-layout>
+        <v-flex class="body-2">E2E PDR Trend (in last 10min)</v-flex>
+      </v-layout>
+      <apexchart type="line" height="200px" :options="options" :series="series"/>
+    </v-container>
+  </v-card>
+</v-flex>
 </template>
 
 <script>

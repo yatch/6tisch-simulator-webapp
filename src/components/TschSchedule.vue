@@ -1,23 +1,26 @@
 <template>
-  <v-card :width="canvasWidth">
-    <v-tooltip bottom>
-      <div slot="activator">
-        <v-card-title>TSCH Schedule</v-card-title>
-        <div id="draw-shapes"></div>
-        <v-card-text v-if="showText">
-          <div>(SlotOffset=0, ChannelOffset=0) is on the upper left</div>
-          <div>(SlotOffset={{ this.numSlots - 1}}, ChannelOffset={{ this.numChannels - 1 }}) is on the lower right</div>
-          <div>
-            <span><font class="title">&#9633;</font>No Cell, </span>
-            <span><font class="title" color="blue">&#9632;</font>One TX Cell, </span>
-            <span><font class="title" color="orange">&#9632;</font>Two TX Cells, </span>
-            <span><font class="title" color="red">&#9632;</font>More than two Tx Cells on that spot (SlotOffset/ChannelOffset)</span>
-          </div>
-        </v-card-text>
-      </div>
-      <span>Global view of TSCH Schedule</span>
-    </v-tooltip>
+<v-flex xs8>
+<v-card height="100%">
+  <v-container>
+    <v-layout>
+      <v-flex class="body-2">TSCH Schedule</v-flex>
+    </v-layout>
+    <v-flex>
+      <div id="draw-shapes"></div>
+      <v-card-text v-if="showText">
+        <div>(SlotOffset=0, ChannelOffset=0) is on the upper left</div>
+        <div>(SlotOffset={{ this.numSlots - 1}}, ChannelOffset={{ this.numChannels - 1 }}) is on the lower right</div>
+        <div>
+          <span><font class="title">&#9633;</font>No Cell, </span>
+          <span><font class="title" color="blue">&#9632;</font>One TX Cell, </span>
+          <span><font class="title" color="orange">&#9632;</font>Two TX Cells, </span>
+          <span><font class="title" color="red">&#9632;</font>More than two Tx Cells on that spot (SlotOffset/ChannelOffset)</span>
+        </div>
+      </v-card-text>
+    </v-flex>
+  </v-container>
   </v-card>
+</v-flex>
 </template>
 
 <script>
@@ -31,12 +34,12 @@ export default {
     return {
       two: undefined,
       cells: [],
-      canvasWidth: 800,
-      canvasHeight: 140,
+      canvasWidth: 740,
+      canvasHeight: 130,
       cellWidth: 7,
       cellHeight: 7,
-      leftPadding: 43,
-      topPadding: 10,
+      leftPadding: 10,
+      topPadding: 20,
       showText: false
     }
   },

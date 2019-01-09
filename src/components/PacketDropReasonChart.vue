@@ -1,8 +1,14 @@
 <template>
-<v-card width="300px">
-  <v-card-title>Frame Drop Reason</v-card-title>
-  <apexchart type="bar" height="250px" :options="options" :series="series"/>
-</v-card>
+  <v-flex xs4>
+    <v-card>
+      <v-container>
+        <v-layout>
+          <v-flex class="body-2">Frame Drop Count with Reason</v-flex>
+        </v-layout>
+        <apexchart type="bar" height="200px" :options="options" :series="series"/>
+      </v-container>
+    </v-card>
+</v-flex>
 </template>
 
 <script>

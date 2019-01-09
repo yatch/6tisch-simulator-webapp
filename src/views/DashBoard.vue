@@ -6,13 +6,13 @@
     <SlotframeOccupancy/>
     <SimController/>
   </v-layout>
-  <v-layout align-space-around justify-space-around row fill-height>
-    <RplTopology/>
+  <v-layout>
     <E2EPdrChart/>
     <E2ELatencyChart/>
     <PacketDropReasonChart/>
   </v-layout>
-  <v-layout align-space-around justify-space-around row fill-height>
+  <v-layout>
+    <RplTopology/>
     <TschSchedule/>
   </v-layout>
 </v-container>
