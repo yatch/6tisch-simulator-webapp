@@ -24,6 +24,6 @@ export default new Router({
       name: 'results',
       path: '/results',
       component: Results
-    },
+    }
   ]
 })

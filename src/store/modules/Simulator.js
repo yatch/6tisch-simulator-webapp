@@ -12,7 +12,8 @@ export default {
     operationalStatus: undefined,
     settings: undefined,
     availableSFs: undefined,
-    availableConnectivities: undefined
+    availableConnectivities: undefined,
+    gitInfo: undefined
   },
   getters: {
     connectionStatus (state) { return state.connectionStatus },
@@ -20,6 +21,7 @@ export default {
     settings (state) { return state.settings },
     availableSFs (state) { return state.availableSFs },
     availableConnectivities (state) { return state.availableConnectivities },
+    gitInfo (state) { return state.gitInfo }
   },
   mutations: {
     changeConnectionStatus (state, newStatus) {
@@ -36,7 +38,8 @@ export default {
     },
     setAvailableConnectivities (state, connList) {
       state.availableConnectivities = connList
-    }
+    },
+    setGitInfo (state, gitInfo) { state.gitInfo = gitInfo }
   },
   actions: {
     disconnect ({ commit }) {
@@ -79,6 +82,7 @@ export default {
     },
     setAvailableConnectivities ({ commit }, connList) {
       commit('setAvailableConnectivities', connList)
-    }
+    },
+    setGitInfo ({ commit }, gitInfo) { commit('setGitInfo', gitInfo) }
   }
 }
