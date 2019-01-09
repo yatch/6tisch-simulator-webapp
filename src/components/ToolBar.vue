@@ -1,5 +1,5 @@
 <template>
-<v-toolbar app>
+<v-toolbar app dense>
   <v-toolbar-title class="headline text-uppercase">
     <span>6TiSCH</span>
     <span class="font-weight-light">Simulator</span>
