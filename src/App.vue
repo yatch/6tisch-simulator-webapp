@@ -1,15 +1,19 @@
 <template>
 <v-app>
-  <v-content>
+  <TheToolbar/>
+  <v-content fluid>
     <router-view/>
   </v-content>
 </v-app>
 </template>
 
 <script>
+import TheToolbar from '@/components/TheToolbar'
+
 export default {
   name: 'App',
   components: {
+    TheToolbar
   },
   data () {
     return {

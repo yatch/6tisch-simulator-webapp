@@ -8,7 +8,7 @@ export default {
       'tsch.delete_cell',
       'rpl.churn'
     ],
-    connectionStatus: null,
+    connectionStatus: 'disconnected',
     operationalStatus: null,
     settings: null,
     availableSFs: null,
