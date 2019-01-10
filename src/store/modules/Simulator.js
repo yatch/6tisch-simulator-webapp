@@ -8,12 +8,12 @@ export default {
       'tsch.delete_cell',
       'rpl.churn'
     ],
-    connectionStatus: undefined,
-    operationalStatus: undefined,
-    settings: undefined,
-    availableSFs: undefined,
-    availableConnectivities: undefined,
-    gitInfo: undefined
+    connectionStatus: null,
+    operationalStatus: null,
+    settings: null,
+    availableSFs: null,
+    availableConnectivities: null,
+    gitInfo: null
   },
   getters: {
     connectionStatus (state) { return state.connectionStatus },
@@ -73,7 +73,7 @@ export default {
     },
     saveSettings ({ commit }, settings) {
       commit('updateSettings', settings)
-      if (settings !== undefined) {
+      if (settings !== null) {
         commit('changeOperationalStatus', 'ready')
       }
     },

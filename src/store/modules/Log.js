@@ -1,11 +1,11 @@
 export default {
   namespaced: true,
   state: {
-    lastRplParentChangeEvent: undefined,
-    lastTschCellAllocationEvent: undefined,
-    lastAppPacketEvent: undefined,
-    lastPacketDropEvent: undefined,
-    elapsedMinutes: undefined,
+    lastRplParentChangeEvent: null,
+    lastTschCellAllocationEvent: null,
+    lastAppPacketEvent: null,
+    lastPacketDropEvent: null,
+    elapsedMinutes: null,
     motes: []
   },
   getters: {
@@ -19,14 +19,14 @@ export default {
   },
   mutations: {
     updateLastRplParentChangeEvent (state, event) {
-      if (event === undefined) {
+      if (event === null) {
         return
       }
       const childId = event._mote_id
       const oldParentId = state.motes[childId].rplParentId
       let newParentId
       if (event.preferredParent == null) {
-        newParentId = undefined
+        newParentId = null
       } else {
         newParentId = state.motes.findIndex(mote => {
           return mote.eui64Addr === event.preferredParent
@@ -36,7 +36,7 @@ export default {
       state.lastRplParentChangeEvent = { childId, oldParentId, newParentId }
     },
     updateLastTschCellAllocationEvent (state, event) {
-      if (event === undefined) {
+      if (event === null) {
         return
       }
       let type
@@ -56,8 +56,8 @@ export default {
       }
     },
     updateLastAppPacketEvent (state, event) {
-      if (event === undefined) {
-        state.lastAppPacketEvent = undefined
+      if (event === null) {
+        state.lastAppPacketEvent = null
       } else {
         let type
         if (event._type === 'app.rx') {
@@ -73,8 +73,8 @@ export default {
       }
     },
     updateLastPacketDropEvent (state, event) {
-      if (event === undefined) {
-        state.lastPacketDropEvent = undefined
+      if (event === null) {
+        state.lastPacketDropEvent = null
       } else {
         state.lastPacketDropEvent = {
           'asn': event._asn,
@@ -86,7 +86,7 @@ export default {
     },
     updateElapsedMinutes (state, value) { state.elapsedMinutes = value },
     updateMoteAddress (state, event) {
-      if (event === undefined) {
+      if (event === null) {
         return
       } else if (event._type === 'mac.add_addr' && event.type === 'eui64') {
         state.motes[event._mote_id].eui64Addr = event.addr
@@ -100,10 +100,10 @@ export default {
     },
     initializeMotes (state, numMotes) {
       state.motes = Array(numMotes).fill().map(() => ({
-        eui64Addr: undefined,
-        ipv6LinkLocalAddr: undefined,
-        ipv6GlobalAddr: undefined,
-        rplParentId: undefined
+        eui64Addr: null,
+        ipv6LinkLocalAddr: null,
+        ipv6GlobalAddr: null,
+        rplParentId: null
       }))
     }
   },
@@ -129,10 +129,10 @@ export default {
     },
     reset ( { commit, rootGetters }) {
       commit('updateElapsedMinutes', 0)
-      commit('updateLastAppPacketEvent', undefined)
-      commit('updateLastPacketDropEvent', undefined)
-      commit('updateLastTschCellAllocationEvent', undefined)
-      commit('updateLastRplParentChangeEvent', undefined)
+      commit('updateLastAppPacketEvent', null)
+      commit('updateLastPacketDropEvent', null)
+      commit('updateLastTschCellAllocationEvent', null)
+      commit('updateLastRplParentChangeEvent', null)
       commit('initializeMotes', rootGetters['simulator/settings'].exec_numMotes)
     }
   }
