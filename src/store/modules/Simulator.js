@@ -65,9 +65,10 @@ export default {
         commit('changeOperationalStatus', 'running')
       })
     },
-    abort ({ commit }, eel) {
+    abort ({ commit, dispatch }, eel) {
       eel.abort()(() => {
         commit('changeOperationalStatus', 'aborted')
+        dispatch('simulation/reset', null, { root: true })
         commit('changeOperationalStatus', 'ready')
       })
     },

@@ -5,18 +5,21 @@
   <v-content fluid>
     <router-view/>
   </v-content>
+  <TheFooter/>
 </v-app>
 </template>
 
 <script>
 import TheToolbar from '@/components/TheToolbar'
 import TheNavigationDrawer from '@/components/TheNavigationDrawer'
+import TheFooter from '@/components/TheFooter'
 
 export default {
   name: 'App',
   components: {
     TheToolbar,
-    TheNavigationDrawer
+    TheNavigationDrawer,
+    TheFooter
   },
   data () {
     return {
