@@ -16,6 +16,7 @@ def on_close_callback(page, sockets):
     print 'Detect a WebSocket is closed; keep running'
     backend.sim.clear_sim()
 
+
 def start_server():
     # initialize eel
     eel.init(backend.DEFAULT_WEB_ROOT_PATH)
