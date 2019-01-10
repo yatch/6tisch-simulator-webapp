@@ -125,6 +125,13 @@ def start(settings, log_notification_filter='all'):
     sim_log = None
     ret_val = {}
 
+    if _sim_engine is not None:
+        return {
+            'status' : RETURN_STATUS_FAILURE,
+            'message': 'SimEngine has been started already',
+            'trace'  : None
+        }
+
     try:
         sim_settings = SimSettings.SimSettings(
             cpuID        = 0,

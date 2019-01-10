@@ -187,7 +187,11 @@ def sim_action(request):
     return request.param
 
 
-@pytest.fixture(params=['success', 'failure'])
+@pytest.fixture(params=[
+    'success',
+    'failure_on_sim_state',
+    'failure_on_sim_existence']
+)
 def return_type(request):
     return request.param
 
@@ -200,11 +204,18 @@ def test_return_values(sim_action, return_type):
         if return_type == 'success':
             # use the default settings; do nothing
             pass
+        elif return_type == 'failure_on_sim_existence':
+            # set a dummy object to _sim_engine
+            backend.sim._sim_engine = {}
         else:
             # make an error in settings
             del settings['exec_numMotes']
         ret_val = backend.sim.start(settings)
-        assert backend.sim._sim_engine is None
+        if return_type == 'failure_on_sim_existence':
+            # revert _sim_engine
+            backend.sim._sim_engine = None
+        else:
+            assert backend.sim._sim_engine is None
     else:
         method_to_call = getattr(backend.sim, sim_action)
         greenlet = gevent.spawn(backend.sim.start, settings)
@@ -226,13 +237,12 @@ def test_return_values(sim_action, return_type):
         assert backend.sim._sim_engine is None
 
     if return_type == 'success':
+        assert ret_val['status'] == backend.sim.RETURN_STATUS_SUCCESS
         assert 'message' not in ret_val
         assert 'trace' not in ret_val
     else:
+        assert ret_val['status'] == backend.sim.RETURN_STATUS_FAILURE
         assert ret_val['message'] is not None
-        assert ret_val['trace'] is not None
-
-    assert ret_val['status'] == return_type
 
 
 @pytest.fixture(params=['webapp', 'simulator'])
