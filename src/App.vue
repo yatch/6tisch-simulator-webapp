@@ -1,6 +1,7 @@
 <template>
 <v-app>
   <TheToolbar/>
+  <TheNavigationDrawer/>
   <v-content fluid>
     <router-view/>
   </v-content>
@@ -9,11 +10,13 @@
 
 <script>
 import TheToolbar from '@/components/TheToolbar'
+import TheNavigationDrawer from '@/components/TheNavigationDrawer'
 
 export default {
   name: 'App',
   components: {
-    TheToolbar
+    TheToolbar,
+    TheNavigationDrawer
   },
   data () {
     return {
