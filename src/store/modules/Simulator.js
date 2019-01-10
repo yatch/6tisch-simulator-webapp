@@ -49,7 +49,7 @@ export default {
       commit('changeConnectionStatus', 'connected')
     },
     start ({ state, commit, dispatch }, eel) {
-      dispatch('log/reset', null, { root: true })
+      dispatch('simulation/reset', null, { root: true })
       commit('changeOperationalStatus', 'running')
       eel.start(state.settings, state.defaultLogFilter)(() => {
         commit('changeOperationalStatus', 'ready')

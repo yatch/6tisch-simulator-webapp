@@ -11,7 +11,7 @@
      if (eel !== undefined) {
          eel.expose(notifyLogEvent)
          function notifyLogEvent (logEvent) {
-             window.vm.$store.dispatch('log/put', logEvent)
+             window.vm.$store.dispatch('simulation/put', logEvent)
          }
      }
     </script>
