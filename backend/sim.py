@@ -324,3 +324,12 @@ def _destroy_sim():
 
     _sim_engine = None
     _elapsed_minutes = 0
+
+
+def clear_sim():
+    global _sim_engine
+    if _sim_engine == None:
+        # nothing to do
+        pass
+    else:
+        _destroy_sim()
