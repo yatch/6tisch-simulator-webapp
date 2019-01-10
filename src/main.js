@@ -5,6 +5,7 @@ import store from './store'
 import router from './router'
 import './plugins/cytoscape'
 import './plugins/apexchart'
+import './plugins/eel'
 
 Vue.config.productionTip = false
 

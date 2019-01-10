@@ -8,17 +8,10 @@
     <title>6tisch-simulator-webapp</title>
     <script src="/eel.js"></script>
     <script>
-     window.onload = function () {
-         try {
-             window.eel = eel
-             eel.expose(notifyLogEvent)
-             function notifyLogEvent (logEvent) {
-                 window.vm.$store.dispatch('log/put', logEvent)
-             }
-         } catch (e) {
-             if (e instanceof ReferenceError) {
-                 window.eel = undefined
-             }
+     if (eel !== undefined) {
+         eel.expose(notifyLogEvent)
+         function notifyLogEvent (logEvent) {
+             window.vm.$store.dispatch('log/put', logEvent)
          }
      }
     </script>

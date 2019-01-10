@@ -48,25 +48,25 @@ export default {
     connect ({ commit }) {
       commit('changeConnectionStatus', 'connected')
     },
-    start ({ state, commit, dispatch }) {
+    start ({ state, commit, dispatch }, eel) {
       dispatch('log/reset', null, { root: true })
       commit('changeOperationalStatus', 'running')
-      window.eel.start(state.settings, state.defaultLogFilter)(() => {
+      eel.start(state.settings, state.defaultLogFilter)(() => {
         commit('changeOperationalStatus', 'ready')
       })
     },
-    pause ({ commit }) {
-      window.eel.pause()(() => {
+    pause ({ commit }, eel) {
+      eel.pause()(() => {
         commit('changeOperationalStatus', 'paused')
       })
     },
-    resume ({ commit }) {
-      window.eel.resume()(() => {
+    resume ({ commit }, eel) {
+      eel.resume()(() => {
         commit('changeOperationalStatus', 'running')
       })
     },
-    abort ({ commit }) {
-      window.eel.abort()(() => {
+    abort ({ commit }, eel) {
+      eel.abort()(() => {
         commit('changeOperationalStatus', 'aborted')
         commit('changeOperationalStatus', 'ready')
       })

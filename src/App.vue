@@ -1,9 +1,9 @@
 <template>
-  <v-app>
-    <v-content>
-      <router-view/>
-    </v-content>
-  </v-app>
+<v-app>
+  <v-content>
+    <router-view/>
+  </v-content>
+</v-app>
 </template>
 
 <script>
@@ -17,6 +17,51 @@ export default {
     }
   },
   created () {
+    // Websocket for Eel is instantiated by Eel on DOMContentLoaded
+    // event and its event handler is expected to have already been
+    // added. So, when our initializeEel() is called, the websocket
+    // should be available.
+    document.addEventListener('DOMContentLoaded', this.initializeEel)
+  },
+  methods: {
+    initializeEel () {
+      if (this.$_eel === undefined) {
+        this.eelCloseHandler()
+      } else {
+        const websocket = this.$_eel._websocket
+        const that = this
+        if (websocket.readyState === websocket.CONNECTING) {
+          websocket.addEventListener('open', () => { that.eelOpenHandler() })
+        } else if (websocket.readyState === websocket.OPEN) {
+          this.eelOpenHandler()
+        }
+        if ((websocket.readyState === websocket.CLOSING) ||
+            (websocket.readyState === websocket.CLOSED)) {
+          this.eelCloseHandler()
+        } else {
+          websocket.addEventListener('close', () => { that.eelCloseHandler() })
+        }
+      }
+    },
+    eelOpenHandler () {
+      this.$store.dispatch('simulator/connect')
+      this.$_eel.get_default_settings()(defaultSettings => {
+        this.$store.dispatch('simulator/saveSettings', defaultSettings)
+      })
+      this.$_eel.get_available_scheduling_functions()(availableSFs => {
+        this.$store.dispatch('simulator/setAvailableSFs', availableSFs)
+      })
+      this.$_eel.get_available_connectivities()(availableConnectivities => {
+        this.$store.dispatch('simulator/setAvailableConnectivities',
+                             availableConnectivities)
+      })
+      this.$_eel.get_git_info()(gitInfo => {
+        this.$store.dispatch('simulator/setGitInfo', gitInfo)
+      })
+    },
+    eelCloseHandler() {
+      this.$store.dispatch('simulator/disconnect')
+    }
   }
 }
 </script>
