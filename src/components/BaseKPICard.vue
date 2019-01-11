@@ -5,7 +5,7 @@
   >
   <v-tooltip bottom>
     <v-card slot="activator" height="100%">
-      <v-card-title class="subheading">
+      <v-card-title class="body-2">
         <slot name="title"/>
       </v-card-title>
       <v-card-text class="title">
@@ -13,11 +13,7 @@
           <slot name="main-contents"/>
         </v-layout>
       </v-card-text>
-      <v-card-text>
-        <v-layout justify-center>
-          <slot name="sub-contents"/>
-        </v-layout>
-      </v-card-text>
+      <slot name="sub-contents"/>
     </v-card>
     <span>
       <slot name="help"/>

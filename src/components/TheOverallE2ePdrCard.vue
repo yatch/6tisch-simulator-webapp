@@ -2,32 +2,23 @@
 <BaseKPICard>
   <span slot="title">Overall E2E PDR</span>
   <span slot="main-contents">{{ pdr }}</span>
-  <v-flex slot="sub-contents">
-    <v-container
-      pa-0
-      ma-0
+  <div slot="sub-contents">
+    <v-layout justify-center>
+      <v-flex xs10>
+        <v-divider/>
+      </v-flex>
+    </v-layout>
+    <v-layout
+      align-center
+      justify-center
+      row wrap
+      text-xs-center
       >
-      <v-layout
-        v-for="item in items"
-        :key="item.name"
-        justify-center
-        >
-        <v-flex
-          xs2
-          class="caption"
-          >
-          {{ item.name }}
-        </v-flex>
-        <v-flex
-          xs3
-          class="caption"
-          text-xs-right
-          >
-          {{ item.value }}
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-flex>
+      <v-flex xs3>TX: {{ numTx }}</v-flex>
+      <v-flex xs3>RX: {{ numRx }}</v-flex>
+      <v-flex xs3>Drop: {{ numDrop }}</v-flex>
+    </v-layout>
+  </div>
   <span slot="help">
     End-to-End PDR since the beginning of the simulation
   </span>
@@ -58,13 +49,6 @@ export default {
       } else {
         return (this.numRx / this.numTx * 100).toFixed(3).toString() + '%'
       }
-    },
-    items () {
-      return [
-        { name: 'numTx', value: this.numTx },
-        { name: 'numRx', value: this.numRx },
-        { name: 'numDrop', value: this.numDrop }
-      ]
     }
   },
   watch: {

@@ -15,6 +15,7 @@
             :value="progress"
             color="pink lighten-3"
             background-color="grey lighten-1"
+            class="ma-0"
             />
              </v-flex>
       </v-layout>

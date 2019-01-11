@@ -1,6 +1,8 @@
 <template>
 <v-flex xs12>
-  <v-container grid-list-sm>
+  <v-container
+    grid-list-sm
+    >
     <v-layout
       row
       wrap
