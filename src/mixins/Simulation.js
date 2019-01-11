@@ -5,6 +5,9 @@ export default {
     },
     $_simulation_lastlastAppPacketEvent () {
       return this.$store.getters['simulation/lastAppPacketEvent']
+    },
+    $_simulation_lastTschCellAllocationEvent () {
+      return this.$store.getters['simulation/lastTschCellAllocationEvent']
     }
   }
 }
