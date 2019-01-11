@@ -9,6 +9,12 @@
       <TheOverallE2eLatencyCard/>
       <TheSlotframeOccupancyCard/>
     </v-layout>
+    <v-layout
+      row
+      wrap
+      >
+      <TheE2ePdrChartCard/>
+    </v-layout>
   </v-container>
 </v-flex>
 </template>
@@ -17,12 +23,14 @@
 import TheOverallE2ePdrCard from '@/components/TheOverallE2ePdrCard'
 import TheOverallE2eLatencyCard from '@/components/TheOverallE2eLatencyCard'
 import TheSlotframeOccupancyCard from '@/components/TheSlotframeOccupancyCard'
+import TheE2ePdrChartCard from '@/components/TheE2ePdrChartCard'
 
 export default {
   components: {
     TheOverallE2ePdrCard,
     TheOverallE2eLatencyCard,
-    TheSlotframeOccupancyCard
+    TheSlotframeOccupancyCard,
+    TheE2ePdrChartCard
   }
 }
 </script>
