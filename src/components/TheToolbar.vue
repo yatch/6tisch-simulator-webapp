@@ -3,15 +3,7 @@
   dense
   app
   >
-  <v-tooltip bottom>
-    <v-icon
-      :color="$_simulator_connectionStatus | color"
-      slot="activator"
-      >
-      {{ $_simulator_connectionStatus | icon }}
-    </v-icon>
-    <span>{{ $_simulator_connectionStatus }}</span>
-  </v-tooltip>
+  <TheConnectionStatus/>
   <v-toolbar-title class="headline text-uppercase">
     <span>6TiSCH</span>
     <span class="font-weight-light">Simulator</span>
@@ -26,30 +18,17 @@
 
 <script>
 import App from '@/mixins/App'
-import Simulator from '@/mixins/Simulator'
+import TheConnectionStatus from '@/components/TheConnectionStatus'
 
 export default {
-  mixins: [App, Simulator],
+  components: {
+    TheConnectionStatus
+  },
+  mixins: [App],
   computed: {
     disabled () {
       return (this.$_simulator_operationalStatus === 'running' ||
               this.$_simulator_operationalStatus === 'paused')
-    }
-  },
-  filters: {
-    color (connectionStatus) {
-      if (connectionStatus === 'connected') {
-        return 'success'
-      } else {
-        return 'error'
-      }
-    },
-    icon (connectionStatus) {
-      if (connectionStatus === 'connected') {
-        return 'check'
-      } else {
-        return 'error'
-      }
     }
   }
 }
