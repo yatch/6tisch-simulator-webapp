@@ -3,11 +3,13 @@ export default {
   state: {
     navigationDrawer: false,
     aboutDialog: false,
+    configDialog: false,
     status: 'starting'
   },
   getters: {
     navigationDrawer (state) { return state.navigationDrawer },
     aboutDialog (state) { return state.aboutDialog },
+    configDialog (state) { return state.configDialog },
     status (state) { return state.status }
   },
   mutations: {
@@ -15,6 +17,7 @@ export default {
       state.navigationDrawer = value
     },
     setAboutDialog (state, value) { state.aboutDialog = value },
+    setConfigDialog (state, value) { state.configDialog = value },
     setStatus (state, newStatus) { state.status = newStatus }
   },
   actions: {
@@ -23,6 +26,9 @@ export default {
     },
     setAboutDialog ({ commit }, newValue) {
       commit('setAboutDialog', newValue)
+    },
+    setConfigDialog ({ commit }, newValue) {
+      commit('setConfigDialog', newValue)
     },
     setStatus ({ commit }, newStatus) {
       commit('setStatus', newStatus)

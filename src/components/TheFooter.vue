@@ -17,7 +17,7 @@
             background-color="grey lighten-1"
             class="ma-0"
             />
-             </v-flex>
+        </v-flex>
       </v-layout>
       <v-layout
         align-center
@@ -77,14 +77,24 @@
           </v-chip>
           <span>Number of Motes</span>
         </v-tooltip>
-        <v-btn
-          icon
-          >
-          <v-icon>settings</v-icon>
-        </v-btn>
+        <v-tooltip top>
+          <v-btn
+            icon
+            slot="activator"
+            :disabled="!settingsButtonEnabled"
+            @click.stop="$_app_configDialog = true"
+            >
+            <v-icon>settings</v-icon>
+          </v-btn>
+          <span>
+            Change the simulator settings; you cannot do that while a
+            simulation is underway
+          </span>
+        </v-tooltip>
+        <SettingsDialog/>
       </v-layout>
     </v-container>
-    </v-flex>
+  </v-flex>
 </v-footer>
 </template>
 
@@ -92,14 +102,19 @@
 import App from '@/mixins/App'
 import Simulator from '@/mixins/Simulator'
 import Simulation from '@/mixins/Simulation'
+import SettingsDialog from '@/components/SettingsDialog'
 
 export default {
+  components: {
+    SettingsDialog
+  },
   mixins: [App, Simulator, Simulation],
   computed: {
     running () { return this.$_simulator_operationalStatus === 'running' },
     disabled () {
       return this.$_app_status !== 'ready'
     },
+    ready() { return this.$_simulator_operationalStatus === 'ready' },
     sfClass () {
       if (this.$_simulator_settings === null) {
         return 'unknown'
@@ -149,6 +164,13 @@ export default {
       } else {
         return this.currentMinutes / this.endMinutes * 100
       }
+    },
+    settingsButtonEnabled () {
+      return (this.$_simulator_operationalStatus === 'ready' &&
+              this.$_simulator_settings !== null &&
+              this.$_simulator_availableSFs.length > 0 &&
+              this.$_simulator_availableConnectivities.length > 0 &&
+              this.$_app_status === 'ready')
     }
   },
   filters: {

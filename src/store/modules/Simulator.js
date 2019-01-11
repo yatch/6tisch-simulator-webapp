@@ -11,8 +11,8 @@ export default {
     connectionStatus: 'disconnected',
     operationalStatus: null,
     settings: null,
-    availableSFs: null,
-    availableConnectivities: null,
+    availableSFs: [],
+    availableConnectivities: [],
     gitInfo: null
   },
   getters: {
@@ -31,7 +31,7 @@ export default {
       state.operationalStatus = newStatus
     },
     updateSettings (state, newSettings) {
-      state.settings = newSettings
+      state.settings = Object.assign({}, newSettings)
     },
     setAvailableSFs (state, sfList) {
       state.availableSFs = sfList
@@ -73,6 +73,11 @@ export default {
       })
     },
     saveSettings ({ commit }, settings) {
+      if (settings !== null &&
+          settings.exec_randomSeed === 'random') {
+        // pick an integer for the default seed
+        settings.exec_randomSeed = Math.floor(Math.random() * 10000)
+      }
       commit('updateSettings', settings)
       if (settings !== null) {
         commit('changeOperationalStatus', 'ready')
