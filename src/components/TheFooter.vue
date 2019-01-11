@@ -16,7 +16,7 @@
             color="pink lighten-3"
             background-color="grey lighten-1"
             />
-        </v-flex>
+             </v-flex>
       </v-layout>
       <v-layout
         align-center
@@ -27,6 +27,7 @@
         <v-btn
           @click="onClickPlay"
           :icon="$vuetify.breakpoint.xsOnly"
+          :disabled="disabled"
           >
           <span v-if="$vuetify.breakpoint.smAndUp">
             {{ running | playString }}
@@ -36,6 +37,7 @@
         <v-btn
           @click="onClickStop"
           :icon="$vuetify.breakpoint.xsOnly"
+          :disabled="disabled"
           >
           <span v-if="$vuetify.breakpoint.smAndUp">Stop</span>
           <v-icon>stop</v-icon>
@@ -81,18 +83,22 @@
         </v-btn>
       </v-layout>
     </v-container>
-  </v-flex>
+    </v-flex>
 </v-footer>
 </template>
 
 <script>
+import App from '@/mixins/App'
 import Simulator from '@/mixins/Simulator'
 import Simulation from '@/mixins/Simulation'
 
 export default {
-  mixins: [Simulator, Simulation],
+  mixins: [App, Simulator, Simulation],
   computed: {
     running () { return this.$_simulator_operationalStatus === 'running' },
+    disabled () {
+      return this.$_app_status !== 'ready'
+    },
     sfClass () {
       if (this.$_simulator_settings === null) {
         return 'unknown'

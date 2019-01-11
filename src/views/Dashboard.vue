@@ -22,6 +22,7 @@
       wrap
       >
       <TheRplTopologyCard/>
+      <TheTschScheduleCard/>
     </v-layout>
   </v-container>
 </v-flex>
@@ -35,6 +36,7 @@ import TheE2ePdrChartCard from '@/components/TheE2ePdrChartCard'
 import TheE2eLatencyChartCard from '@/components/TheE2eLatencyChartCard'
 import ThePacketDropChartCard from '@/components/ThePacketDropChartCard'
 import TheRplTopologyCard from '@/components/TheRplTopologyCard'
+import TheTschScheduleCard from '@/components/TheTschScheduleCard'
 
 export default {
   components: {
@@ -44,7 +46,8 @@ export default {
     TheE2ePdrChartCard,
     TheE2eLatencyChartCard,
     ThePacketDropChartCard,
-    TheRplTopologyCard
+    TheRplTopologyCard,
+    TheTschScheduleCard
   }
 }
 </script>
