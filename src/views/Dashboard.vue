@@ -15,6 +15,7 @@
       >
       <TheE2ePdrChartCard/>
       <TheE2eLatencyChartCard/>
+      <ThePacketDropChartCard/>
     </v-layout>
   </v-container>
 </v-flex>
@@ -26,6 +27,7 @@ import TheOverallE2eLatencyCard from '@/components/TheOverallE2eLatencyCard'
 import TheSlotframeOccupancyCard from '@/components/TheSlotframeOccupancyCard'
 import TheE2ePdrChartCard from '@/components/TheE2ePdrChartCard'
 import TheE2eLatencyChartCard from '@/components/TheE2eLatencyChartCard'
+import ThePacketDropChartCard from '@/components/ThePacketDropChartCard'
 
 export default {
   components: {
@@ -33,7 +35,8 @@ export default {
     TheOverallE2eLatencyCard,
     TheSlotframeOccupancyCard,
     TheE2ePdrChartCard,
-    TheE2eLatencyChartCard
+    TheE2eLatencyChartCard,
+    ThePacketDropChartCard
   }
 }
 </script>

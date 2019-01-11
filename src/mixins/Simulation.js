@@ -8,6 +8,9 @@ export default {
     },
     $_simulation_lastTschCellAllocationEvent () {
       return this.$store.getters['simulation/lastTschCellAllocationEvent']
+    },
+    $_simulation_lastPacketDropEvent () {
+      return this.$store.getters['simulation/lastPacketDropEvent']
     }
   }
 }
