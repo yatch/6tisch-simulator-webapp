@@ -17,6 +17,12 @@
       <TheE2eLatencyChartCard/>
       <ThePacketDropChartCard/>
     </v-layout>
+    <v-layout
+      row
+      wrap
+      >
+      <TheRplTopologyCard/>
+    </v-layout>
   </v-container>
 </v-flex>
 </template>
@@ -28,6 +34,7 @@ import TheSlotframeOccupancyCard from '@/components/TheSlotframeOccupancyCard'
 import TheE2ePdrChartCard from '@/components/TheE2ePdrChartCard'
 import TheE2eLatencyChartCard from '@/components/TheE2eLatencyChartCard'
 import ThePacketDropChartCard from '@/components/ThePacketDropChartCard'
+import TheRplTopologyCard from '@/components/TheRplTopologyCard'
 
 export default {
   components: {
@@ -36,7 +43,8 @@ export default {
     TheSlotframeOccupancyCard,
     TheE2ePdrChartCard,
     TheE2eLatencyChartCard,
-    ThePacketDropChartCard
+    ThePacketDropChartCard,
+    TheRplTopologyCard
   }
 }
 </script>
