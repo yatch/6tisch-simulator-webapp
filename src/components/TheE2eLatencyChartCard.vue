@@ -33,8 +33,7 @@ export default {
         legend: { showForSingleSeries: true },
         xaxis: { labels: { show: false } },
         yaxis: {
-          tickAmount: 6,
-          decimalsInFloat: 0
+          tickAmount: 6
         }
       },
       series: [

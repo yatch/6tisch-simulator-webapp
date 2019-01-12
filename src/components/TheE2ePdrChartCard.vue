@@ -35,8 +35,7 @@ export default {
         yaxis: {
           min: 0,
           max: 100,
-          tickAmount: 5,
-          decimalsInFloat: 0
+          tickAmount: 5
         }
       },
       series: [{
