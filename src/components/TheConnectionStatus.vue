@@ -2,7 +2,6 @@
 <span>
   <v-tooltip bottom>
     <v-icon
-      :color="$_simulator_connectionStatus | color"
       slot="activator"
       >
       {{ $_simulator_connectionStatus | icon }}
@@ -28,7 +27,7 @@
           <v-btn @click.stop="stopTimer()" color="error">
             Cancel
           </v-btn>
-          <v-btn @click.stop="reload()" color="info">
+          <v-btn @click.stop="reload()">
             Reload Now
           </v-btn>
         </v-card-actions>
@@ -44,18 +43,11 @@ import Simulator from '@/mixins/Simulator'
 
 export default {
   filters: {
-    color (connectionStatus) {
-      if (connectionStatus === 'connected') {
-        return 'success'
-      } else {
-        return 'error'
-      }
-    },
     icon (connectionStatus) {
       if (connectionStatus === 'connected') {
-        return 'check'
+        return 'cloud_done'
       } else {
-        return 'error'
+        return 'cloud_off'
       }
     }
   },

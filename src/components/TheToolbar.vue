@@ -3,12 +3,12 @@
   dense
   app
   >
-  <TheConnectionStatus/>
   <v-toolbar-title class="headline text-uppercase">
     <span>6TiSCH</span>
     <span class="font-weight-light">Simulator</span>
   </v-toolbar-title>
   <v-spacer/>
+  <TheConnectionStatus/>
   <v-toolbar-side-icon
     :disabled="disabled"
     @click="$_app_toggleNavigationDrawer()"
