@@ -51,6 +51,16 @@ export default {
             this.close()
           },
           disabled: () => { this.$_app_status === 'ready' }
+        },
+        {
+          name: 'Reload',
+          path: undefined,
+          icon: 'refresh',
+          action: () => {
+            location.reload()
+            this.close()
+          },
+          disabled: false
         }
       ]
     }
