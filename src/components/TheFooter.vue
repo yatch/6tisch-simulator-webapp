@@ -82,7 +82,7 @@
             icon
             slot="activator"
             :disabled="!settingsButtonEnabled"
-            @click.stop="$_app_configDialog = true"
+            @click.stop="$_app_settingsDialog = true"
             >
             <v-icon>settings</v-icon>
           </v-btn>

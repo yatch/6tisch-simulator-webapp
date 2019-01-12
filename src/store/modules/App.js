@@ -3,13 +3,13 @@ export default {
   state: {
     navigationDrawer: false,
     aboutDialog: false,
-    configDialog: false,
+    settingsDialog: false,
     status: 'starting'
   },
   getters: {
     navigationDrawer (state) { return state.navigationDrawer },
     aboutDialog (state) { return state.aboutDialog },
-    configDialog (state) { return state.configDialog },
+    settingsDialog (state) { return state.settingsDialog },
     status (state) { return state.status }
   },
   mutations: {
@@ -17,7 +17,7 @@ export default {
       state.navigationDrawer = value
     },
     setAboutDialog (state, value) { state.aboutDialog = value },
-    setConfigDialog (state, value) { state.configDialog = value },
+    setConfigDialog (state, value) { state.settingsDialog = value },
     setStatus (state, newStatus) { state.status = newStatus }
   },
   actions: {

@@ -8,8 +8,8 @@ export default {
       get () { return this.$store.getters['app/aboutDialog'] },
       set (value) { this.$store.dispatch('app/setAboutDialog', value) }
     },
-    $_app_configDialog: {
-      get () { return this.$store.getters['app/configDialog'] },
+    $_app_settingsDialog: {
+      get () { return this.$store.getters['app/settingsDialog'] },
       set (value) { this.$store.dispatch('app/setConfigDialog', value) }
     }
   },

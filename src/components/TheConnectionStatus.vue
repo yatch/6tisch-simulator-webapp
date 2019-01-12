@@ -73,7 +73,7 @@ export default {
   watch: {
     $_simulator_connectionStatus (status) {
       if (status === 'disconnected') {
-        this.$_app_configDialog = false
+        this.$_app_settingsDialog = false
         this.$_app_aboutDialog = false
         this.dialog = true
         const that = this

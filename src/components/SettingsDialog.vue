@@ -1,7 +1,7 @@
 <template>
 <div>
   <v-dialog
-    v-model="$_app_configDialog"
+    v-model="$_app_settingsDialog"
     persistent
     width="400px"
     >
@@ -164,7 +164,7 @@ export default {
   methods: {
     saveSettings () {
       this.$_simulator_settings = this.newSettings
-      this.$_app_configDialog = false
+      this.$_app_settingsDialog = false
     },
     resetSettings () {
       if (this.$_simulator_settings === null) {
@@ -184,7 +184,7 @@ export default {
     },
     cancelSettings () {
       this.resetSettings()
-      this.$_app_configDialog = false
+      this.$_app_settingsDialog = false
     }
   }
 }
