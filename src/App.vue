@@ -3,7 +3,9 @@
   <TheToolbar/>
   <TheNavigationDrawer/>
   <v-content fluid>
-    <router-view/>
+    <v-layout align-center justify-center row wrap fill-height>
+      <router-view/>
+    </v-layout>
   </v-content>
   <TheFooter/>
   <TheSettingsDialog/>
