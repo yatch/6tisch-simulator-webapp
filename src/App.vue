@@ -8,6 +8,7 @@
     </v-layout>
   </v-content>
   <TheFooter/>
+  <TheAboutDialog/>
   <TheSettingsDialog/>
 </v-app>
 </template>
@@ -16,6 +17,7 @@
 import TheToolbar from '@/components/TheToolbar'
 import TheNavigationDrawer from '@/components/TheNavigationDrawer'
 import TheFooter from '@/components/TheFooter'
+import TheAboutDialog from '@/components/TheAboutDialog'
 import TheSettingsDialog from '@/components/TheSettingsDialog'
 
 export default {
@@ -24,6 +26,7 @@ export default {
     TheToolbar,
     TheNavigationDrawer,
     TheFooter,
+    TheAboutDialog,
     TheSettingsDialog
   },
   data () {

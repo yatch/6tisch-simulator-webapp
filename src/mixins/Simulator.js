@@ -18,6 +18,9 @@ export default {
     $_simulator_availableConnectivities () {
       return this.$store.getters['simulator/availableConnectivities']
     },
+    $_simulator_gitInfo () {
+      return this.$store.getters['simulator/gitInfo']
+    }
   },
   methods: {
     $_simulator_start () {

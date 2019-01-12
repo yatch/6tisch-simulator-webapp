@@ -58,6 +58,14 @@ export default {
           icon: 'refresh',
           action: () => {
             location.reload()
+          }
+        },
+        {
+          name: 'About',
+          path: undefined,
+          icon: 'info',
+          action: () => {
+            this.$_app_aboutDialog = true
             this.close()
           },
           disabled: false
