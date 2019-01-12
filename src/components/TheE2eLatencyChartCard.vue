@@ -40,11 +40,11 @@ export default {
       series: [
         {
           name: 'Avg E2E Lat (s)',
-          data: []
+          data: [{ x: 0, y: 0}]
         },
         {
           name: 'Max E2E Lat (s)',
-          data: []
+          data: [{ x: 0, y: 0}]
         }
       ],
       numRecords: 0,
@@ -104,8 +104,8 @@ export default {
   },
   methods: {
     reset () {
-      this.series[0].data = []
-      this.series[1].data = []
+      this.series[0].data = [{ x: 0, y: 0}]
+      this.series[1].data = [{ x: 0, y: 0}]
       this.numRecords = 0
       this.latencySum = 0
       this.latencyMax = 0

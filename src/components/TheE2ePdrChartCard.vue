@@ -41,7 +41,7 @@ export default {
       },
       series: [{
         name: 'E2E PDR (%)',
-        data: []
+        data: [{ x: 0, y: 0}]
       }],
       numTx: 0,
       numRx: 0
@@ -87,7 +87,7 @@ export default {
   },
   methods: {
     reset () {
-      this.series[0].data = []
+      this.series[0].data = [{ x: 0, y: 0}]
       this.numTx = 0
       this.numRx = 0
     }
