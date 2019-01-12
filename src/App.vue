@@ -6,6 +6,7 @@
     <router-view/>
   </v-content>
   <TheFooter/>
+  <TheSettingsDialog/>
 </v-app>
 </template>
 
@@ -13,13 +14,15 @@
 import TheToolbar from '@/components/TheToolbar'
 import TheNavigationDrawer from '@/components/TheNavigationDrawer'
 import TheFooter from '@/components/TheFooter'
+import TheSettingsDialog from '@/components/TheSettingsDialog'
 
 export default {
   name: 'App',
   components: {
     TheToolbar,
     TheNavigationDrawer,
-    TheFooter
+    TheFooter,
+    TheSettingsDialog
   },
   data () {
     return {

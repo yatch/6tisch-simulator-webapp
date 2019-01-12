@@ -91,7 +91,6 @@
             simulation is underway
           </span>
         </v-tooltip>
-        <SettingsDialog/>
       </v-layout>
     </v-container>
   </v-flex>
@@ -102,12 +101,8 @@
 import App from '@/mixins/App'
 import Simulator from '@/mixins/Simulator'
 import Simulation from '@/mixins/Simulation'
-import SettingsDialog from '@/components/SettingsDialog'
 
 export default {
-  components: {
-    SettingsDialog
-  },
   mixins: [App, Simulator, Simulation],
   computed: {
     running () { return this.$_simulator_operationalStatus === 'running' },
