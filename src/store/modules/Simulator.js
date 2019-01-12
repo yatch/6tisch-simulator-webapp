@@ -48,11 +48,17 @@ export default {
     connect ({ commit }) {
       commit('changeConnectionStatus', 'connected')
     },
+    ready ({ commit }) {
+      commit('changeOperationalStatus', 'ready')
+    },
     start ({ state, commit, dispatch }, eel) {
       dispatch('simulation/reset', null, { root: true })
       commit('changeOperationalStatus', 'running')
       eel.start(state.settings, state.defaultLogFilter)(() => {
-        commit('changeOperationalStatus', 'ready')
+        if (state.operationalStatus === 'running') {
+          // the simulation ends successfully
+          dispatch('ready')
+        }
       })
     },
     pause ({ commit }, eel) {
@@ -66,13 +72,13 @@ export default {
       })
     },
     abort ({ commit, dispatch }, eel) {
+      commit('changeOperationalStatus', 'aborted')
       eel.abort()(() => {
-        commit('changeOperationalStatus', 'aborted')
         dispatch('simulation/reset', null, { root: true })
-        commit('changeOperationalStatus', 'ready')
+        dispatch('ready')
       })
     },
-    saveSettings ({ commit }, settings) {
+    saveSettings ({ commit, dispatch }, settings) {
       if (settings !== null &&
           settings.exec_randomSeed === 'random') {
         // pick an integer for the default seed
@@ -80,7 +86,7 @@ export default {
       }
       commit('updateSettings', settings)
       if (settings !== null) {
-        commit('changeOperationalStatus', 'ready')
+        dispatch('ready')
       }
     },
     setAvailableSFs ({ commit }, sfList) {
