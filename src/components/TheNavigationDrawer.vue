@@ -12,7 +12,7 @@
       v-for="item in items"
       :to="item.path"
       :key="item.name"
-      @click.stop="close"
+      @click.stop="item.action"
       >
       <v-list-tile-action>
         <v-icon>{{ item.icon }}</v-icon>
@@ -28,14 +28,29 @@
 </template>
 
 <script>
+import App from '@/mixins/App'
+
 export default {
+  mixins: [App],
   data () {
     return {
       items: [
         {
           name: 'Dashboard',
           path: '/',
-          icon: 'home'
+          icon: 'home',
+          action: () => { this.close() },
+          disabled: false
+        },
+        {
+          name: 'Settings',
+          path: undefined,
+          icon: 'settings',
+          action: () => {
+            this.$_app_settingsDialog = true
+            this.close()
+          },
+          disabled: () => { this.$_app_status === 'ready' }
         }
       ]
     }
