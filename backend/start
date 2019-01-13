@@ -3,6 +3,7 @@
 # CONSTANTS
 import json
 import os
+import signal
 
 # we CANNOT import backend and refer its variables because importing
 # backend causes gevent to get imported that prevents watchdog from
@@ -53,7 +54,7 @@ def start_server():
 
 def stop_server():
     global server_process
-    server_process.terminate()
+    server_process.send_signal(signal.SIGINT)
 
 # main body of this script
 import subprocess

@@ -9,7 +9,10 @@ module.exports = {
             '/eel': {
                 target: 'http://127.0.0.1:8081',
                 ws: true
-            }
+            },
+          '/config.json': {
+                target: 'http://127.0.0.1:8081/'
+          }
         }
     }
 }

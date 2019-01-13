@@ -6,6 +6,7 @@ import sys
 import eel
 
 import backend
+import backend.routes
 # need to import backend.sim to expose its APIs
 import backend.sim
 
