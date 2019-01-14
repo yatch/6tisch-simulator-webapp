@@ -8,12 +8,20 @@ import pytest
 
 import backend
 import backend.sim
+import backend.utils
 
 
 def call_exposed_api(func, *args):
     gevent.spawn(func, *args)
     # yield the CPU so that the func is invoked in a greenlet
     gevent.sleep(backend.sim.GEVENT_SLEEP_SECONDS_IN_SIM_ENGINE)
+
+
+@pytest.fixture(scope='module', autouse=True)
+def setup_default_config_json():
+    backend.utils._create_config_json()
+    yield
+    backend.utils._delete_config_json()
 
 
 @pytest.fixture(scope='module', autouse=True)
@@ -45,7 +53,8 @@ def sim_engine():
         backend.sim._destroy_sim()
 
 
-def test_get_default_settings():
+@pytest.fixture
+def default_config():
     # read the default config.json from the simulator source directory
     default_config_path = os.path.join(
         backend.get_simulator_path(),
@@ -53,21 +62,73 @@ def test_get_default_settings():
     )
     with open(default_config_path) as f:
         default_config = json.load(f)
+    return default_config
 
-    # get config to test
-    settings = backend.sim.get_default_settings()
 
-    # Combination settings in default_config should have the first
-    # values of them in settings
-    for key, values in default_config['settings']['combination'].items():
-        assert settings[key] == values[0]
+@pytest.fixture
+def default_settings():
+    config = default_config()
+    settings = config['settings']['regular']
+    for key in config['settings']['combination'].keys():
+        settings[key] = config['settings']['combination'][key][0]
+    return settings
 
-    # Other settings should be the same as default_config.
-    for key, value in default_config['settings']['regular'].items():
-        assert (
-            settings[key] ==
-            default_config['settings']['regular'][key]
-        )
+
+def test_get_default_config(default_config):
+    config = backend.sim.get_default_config()
+    assert config['version'] == 0
+    assert config['settings'] == default_config['settings']
+    assert config['execution'] == {
+        "numCPUs": 1,
+        "numRuns": 1
+    }
+    assert config['logging'] == 'all'
+    assert config['log_directory_name'] == 'startTime'
+    assert config['post'] == []
+
+
+@pytest.fixture(params=['success', 'failure'])
+def fixture_test_put_default_config_type(request):
+    return request.param
+
+
+def test_put_default_config(
+        default_config,
+        fixture_test_put_default_config_type
+    ):
+
+    if fixture_test_put_default_config_type == 'success':
+        # change conn_class for this test
+        assert default_config['settings']['regular']['conn_class'] != 'K7'
+        default_config['settings']['regular']['conn_class'] = 'K7'
+    elif fixture_test_put_default_config_type == 'failure':
+        default_config = { 'settings': 'garbage string' }
+    else:
+        raise NotImplementedError()
+
+    # the default config.json should be updated
+    config = backend.sim.get_default_config()
+    assert default_config['settings'] != config['settings']
+    ret = backend.sim.put_default_config(json.dumps(default_config))
+
+    if fixture_test_put_default_config_type == 'success':
+        config = backend.sim.get_default_config()
+        assert default_config['settings'] == config['settings']
+
+        assert ret['config']['version'] == 0
+        assert ret['config']['settings'] == config['settings']
+        assert ret['config']['execution'] == {
+            "numCPUs": 1,
+            "numRuns": 1
+        }
+        assert ret['config']['logging'] == 'all'
+        assert ret['config']['log_directory_name'] == 'startTime'
+        assert ret['config']['post'] == []
+        assert ret['message'] == 'success'
+    else:
+        assert fixture_test_put_default_config_type == 'failure'
+        assert ret['config'] is None
+        assert ret['message'] != 'success'
 
 
 def test_get_available_scheduling_functions():
@@ -83,17 +144,16 @@ def test_get_available_connectivities():
     assert 'K7' in ret
 
 
-def test_start():
-    settings = backend.sim.get_default_settings()
+def test_start(default_settings):
     # set one (slotframe) to exec_numSlotframesPerRun so that the test
     # finishes in a short time
-    settings['exec_numSlotframesPerRun'] = 1
+    default_settings['exec_numSlotframesPerRun'] = 1
 
     # _sim_engine should be None before starting a simulation
     assert backend.sim._sim_engine is None
 
     # call start()
-    call_exposed_api(backend.sim.start, settings)
+    call_exposed_api(backend.sim.start, default_settings)
 
     # _sim_engine should be available now
     assert backend.sim._sim_engine is not None
@@ -102,7 +162,7 @@ def test_start():
     # the simulator should yield the CPU at every end of slotframe
     assert (
         backend.sim._sim_engine.getAsn() ==
-        (settings['tsch_slotframeLength'] - 1)
+        (default_settings['tsch_slotframeLength'] - 1)
     )
 
     # sleep for a while. this makes the simulator run until it
@@ -113,9 +173,8 @@ def test_start():
     assert backend.sim._sim_engine is None
 
 
-def test_pause(sim_engine):
-    settings = backend.sim.get_default_settings()
-    _sim_engine = sim_engine(settings)
+def test_pause(sim_engine, default_settings):
+    _sim_engine = sim_engine(default_settings)
 
     # the simulator should stop at the end of the first slotframe
     asn_before_sleep = _sim_engine.getAsn()
@@ -128,9 +187,8 @@ def test_pause(sim_engine):
     assert _sim_engine.getAsn() == asn_before_sleep + 1
 
 
-def test_resume(sim_engine):
-    settings = backend.sim.get_default_settings()
-    _sim_engine = sim_engine(settings)
+def test_resume(sim_engine, default_settings):
+    _sim_engine = sim_engine(default_settings)
 
     # call pause()
     call_exposed_api(backend.sim.pause)
@@ -149,7 +207,7 @@ def test_resume(sim_engine):
 
     # then, the simulator should proceed its global ASN by one slotframe
     assert _sim_engine.getAsn() == (
-        asn_before_sleep + settings['tsch_slotframeLength'] - 1
+        asn_before_sleep + default_settings['tsch_slotframeLength'] - 1
     )
 
 
@@ -158,9 +216,9 @@ def pause_option(request):
     return request.param
 
 
-def test_abort(sim_engine, pause_option):
-    settings = backend.sim.get_default_settings()
-    _sim_engine = sim_engine(settings)
+def test_abort(sim_engine, default_settings, pause_option):
+    default_settings = backend.sim.get_default_config()['settings']
+    _sim_engine = sim_engine(default_settings)
 
     # pause the simulation if necessary
     if pause_option == 'with_pause':
@@ -196,9 +254,8 @@ def return_type(request):
     return request.param
 
 
-def test_return_values(sim_action, return_type):
-    settings = backend.sim.get_default_settings()
-    settings['exec_numSlotframesPerRun'] = 1
+def test_return_values(default_settings, sim_action, return_type):
+    default_settings['exec_numSlotframesPerRun'] = 1
 
     if sim_action == 'start':
         if return_type == 'success':
@@ -209,8 +266,8 @@ def test_return_values(sim_action, return_type):
             backend.sim._sim_engine = {}
         else:
             # make an error in settings
-            del settings['exec_numMotes']
-        ret_val = backend.sim.start(settings)
+            del default_settings['exec_numMotes']
+        ret_val = backend.sim.start(default_settings)
         if return_type == 'failure_on_sim_existence':
             # revert _sim_engine
             backend.sim._sim_engine = None
@@ -218,7 +275,7 @@ def test_return_values(sim_action, return_type):
             assert backend.sim._sim_engine is None
     else:
         method_to_call = getattr(backend.sim, sim_action)
-        greenlet = gevent.spawn(backend.sim.start, settings)
+        greenlet = gevent.spawn(backend.sim.start, default_settings)
         if return_type == 'success':
             # start a simulation
             gevent.sleep(backend.sim.GEVENT_SLEEP_SECONDS_IN_SIM_ENGINE)

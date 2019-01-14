@@ -11,6 +11,7 @@ import eel
 import gevent
 
 import backend
+import backend.utils
 from SimEngine import (
     SimEngine,
     SimSettings,
@@ -38,10 +39,62 @@ _elapsed_minutes = 0
 
 
 @eel.expose
-def get_default_settings():
-    with open(backend.SIM_CONFIG_PATH) as f:
+def get_default_config():
+    with open(backend.SIM_CONFIG_PATH, 'r') as f:
         config = json.load(f)
-    return config['settings']
+    return config
+
+
+@eel.expose
+def put_default_config(config_str):
+    try:
+        config = json.loads(config_str)
+    except ValueError:
+        return {
+            'config': None,
+            'message': 'No JSON object could be decoded'
+        }
+
+    new_config = backend.utils.CONFIG_JSON_TEMPLATE.copy()
+    if 'settings' not in config:
+        return {
+            'config': None,
+            'message': '"settings" is missing'
+        }
+    else:
+        new_config['settings'] = config['settings']
+        check_config_json = os.path.join(
+        backend.get_simulator_path(),
+        'bin/check_config_json.py'
+    )
+
+    # check the given config
+    popen = subprocess.Popen(
+        [check_config_json, '-s', '-c', '-'],
+        stdin  = subprocess.PIPE,
+        stdout = subprocess.PIPE,
+        stderr = subprocess.PIPE
+    )
+    _, stderrdata = popen.communicate(json.dumps(new_config))
+
+    if popen.returncode == 0:
+        # if the check succeeds, update the default config.json
+        new_config['settings'] = config['settings']
+        # write the new config to the default config.json file
+        with open(backend.SIM_CONFIG_PATH, 'w') as f:
+            json.dump(new_config, f)
+        ret = {
+            'config': new_config,
+            'message': 'success'
+        }
+    else:
+        # return error message
+        ret = {
+            'config': None,
+            'message': stderrdata
+        }
+
+    return ret
 
 
 @eel.expose
