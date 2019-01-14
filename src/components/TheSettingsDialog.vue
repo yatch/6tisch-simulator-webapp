@@ -24,7 +24,7 @@
         <TheConfigFileUploadTab/>
       </v-tab-item>
       <v-tab-item :key="items[2].name">
-        <TheSimpleConfiguratorTab/>
+        <TheConfigFileDownloadTab/>
       </v-tab-item>
     </v-tabs>
   </v-dialog>
@@ -32,14 +32,16 @@
 </template>
 
 <script>
-import App from '@/mixins/App'
-import TheSimpleConfiguratorTab from '@/components/TheSimpleConfiguratorTab.vue'
-import TheConfigFileUploadTab from '@/components/TheConfigFileUploadTab.vue'
+  import App from '@/mixins/App'
+  import TheSimpleConfiguratorTab from '@/components/TheSimpleConfiguratorTab.vue'
+  import TheConfigFileUploadTab from '@/components/TheConfigFileUploadTab.vue'
+  import TheConfigFileDownloadTab from '@/components/TheConfigFileDownloadTab.vue'
 
-export default {
+  export default {
   components: {
     TheSimpleConfiguratorTab,
-    TheConfigFileUploadTab
+    TheConfigFileUploadTab,
+    TheConfigFileDownloadTab
   },
   mixins: [App],
   data () {
