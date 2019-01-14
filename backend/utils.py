@@ -89,7 +89,11 @@ def _create_config_json():
     config = dict(CONFIG_JSON_TEMPLATE)
     config['settings'] = default_config['settings']
 
-    _delete_config_json()
+    config_dir = os.path.dirname(backend.SIM_CONFIG_PATH)
+    if os.path.exists(config_dir) is True:
+        _delete_config_json()
+    else:
+        os.mkdir(config_dir)
 
     with open(backend.SIM_CONFIG_PATH, 'w') as f:
         json.dump(config, f, indent=4)
