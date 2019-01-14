@@ -94,7 +94,7 @@ export default {
   methods: {
     reset () {
       this.numCellsArray = (
-        Array(this.$_simulator_settings.exec_numMotes).fill(0)
+        Array(this.$_simulator_runningSettings.exec_numMotes).fill(0)
       )
       this.maxNumCells = null
       this.minNumCells = null

@@ -6,10 +6,16 @@ export default {
     $_simulator_operationalStatus () {
       return this.$store.getters['simulator/operationalStatus']
     },
-    $_simulator_settings: {
-      get () { return this.$store.getters['simulator/settings'] },
+    $_simulator_defaultSettings: {
+      get () { return this.$store.getters['simulator/defaultSettings'] },
       set (settings) {
-        this.$store.dispatch('simulator/saveSettings', settings)
+        this.$store.dispatch('simulator/saveDefaultSettings', settings)
+      }
+    },
+    $_simulator_runningSettings: {
+      get () { return this.$store.getters['simulator/runningSettings'] },
+      set (settings) {
+        this.$store.dispatch('simulator/updateRunningSettings', settings)
       }
     },
     $_simulator_availableSFs () {

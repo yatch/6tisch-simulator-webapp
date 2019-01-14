@@ -133,7 +133,8 @@ export default {
       commit('updateLastPacketDropEvent', null)
       commit('updateLastTschCellAllocationEvent', null)
       commit('updateLastRplParentChangeEvent', null)
-      commit('initializeMotes', rootGetters['simulator/settings'].exec_numMotes)
+      commit('initializeMotes',
+             rootGetters['simulator/runningSettings'].exec_numMotes)
     }
   }
 }

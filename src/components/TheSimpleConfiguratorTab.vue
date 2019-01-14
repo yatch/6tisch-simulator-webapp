@@ -96,10 +96,10 @@ export default {
     },
     exec_numSlotframesPerRun: {
       get () {
-        if (this.$_simulator_settings === null) {
+        if (this.$_simulator_runningSettings === null) {
           return 0
         } else {
-          const settings = this.$_simulator_settings
+          const settings = this.$_simulator_runningSettings
           return Math.ceil(this.items[4].model *
                            60 /
                            settings.tsch_slotDuration /
@@ -107,7 +107,7 @@ export default {
         }
       },
       set (numSlotframes) {
-        const settings = this.$_simulator_settings
+        const settings = this.$_simulator_runningSettings
         const minutes = Math.floor(numSlotframes *
                                    settings.tsch_slotframeLength *
                                    settings.tsch_slotDuration /
@@ -117,7 +117,7 @@ export default {
     },
     newSettings () {
       return Object.assign(
-        this.$_simulator_settings,
+        this.$_simulator_runningSettings,
         {
           sf_class: this.sf_class,
           conn_class: this.conn_class,
@@ -129,7 +129,7 @@ export default {
     }
   },
   watch: {
-    $_simulator_settings (settings) {
+    $_simulator_runningSettings (settings) {
       if (settings !== null) {
         this.sf_class = settings.sf_class
         this.conn_class = settings.conn_class
@@ -155,18 +155,18 @@ export default {
   },
   methods: {
     saveSettings () {
-      this.$_simulator_settings = this.newSettings
+      this.$_simulator_runningSettings = this.newSettings
       this.$_app_settingsDialog = false
     },
     resetSettings () {
-      if (this.$_simulator_settings === null) {
+      if (this.$_simulator_runningSettings === null) {
         this.sf_class = null
         this.conn_class = null
         this.exec_numMotes = 0
         this.exec_randomSeed = 0
         this.exec_numSlotframesPerRun = 0
       } else {
-        const settings = this.$_simulator_settings
+        const settings = this.$_simulator_runningSettings
         this.sf_class = settings.sf_class
         this.conn_class = settings.conn_class
         this.exec_numMotes = settings.exec_numMotes

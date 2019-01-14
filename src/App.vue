@@ -64,7 +64,7 @@ export default {
     eelOpenHandler () {
       this.$store.dispatch('simulator/connect')
       this.$_eel.get_default_settings()(defaultSettings => {
-        this.$store.dispatch('simulator/saveSettings', defaultSettings)
+        this.$store.dispatch('simulator/saveDefaultSettings', defaultSettings)
       })
       this.$_eel.get_available_scheduling_functions()(availableSFs => {
         this.$store.dispatch('simulator/setAvailableSFs', availableSFs)

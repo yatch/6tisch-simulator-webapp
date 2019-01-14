@@ -111,24 +111,24 @@ export default {
     },
     ready() { return this.$_simulator_operationalStatus === 'ready' },
     sfClass () {
-      if (this.$_simulator_settings === null) {
+      if (this.$_simulator_runningSettings === null) {
         return 'unknown'
       } else {
-        return this.$_simulator_settings.sf_class
+        return this.$_simulator_runningSettings.sf_class
       }
     },
     connClass () {
-      if (this.$_simulator_settings === null) {
+      if (this.$_simulator_runningSettings === null) {
         return 'unknown'
       } else {
-        return this.$_simulator_settings.conn_class
+        return this.$_simulator_runningSettings.conn_class
       }
     },
     numMotes () {
-      if (this.$_simulator_settings === null) {
+      if (this.$_simulator_runningSettings === null) {
         return 'unknown'
       } else {
-        return this.$_simulator_settings.exec_numMotes
+        return this.$_simulator_runningSettings.exec_numMotes
       }
     },
     currentMinutes () {
@@ -141,7 +141,7 @@ export default {
       return minutes
     },
     endMinutes () {
-      const settings = this.$_simulator_settings
+      const settings = this.$_simulator_runningSettings
       let minutes
       if (settings === null) {
         minutes = 0
@@ -162,7 +162,7 @@ export default {
     },
     settingsButtonEnabled () {
       return (this.$_simulator_operationalStatus === 'ready' &&
-              this.$_simulator_settings !== null &&
+              this.$_simulator_runningSettings !== null &&
               this.$_simulator_availableSFs.length > 0 &&
               this.$_simulator_availableConnectivities.length > 0 &&
               this.$_app_status === 'ready')

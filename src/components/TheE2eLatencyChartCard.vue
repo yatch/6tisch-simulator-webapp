@@ -92,7 +92,7 @@ export default {
     $_simulation_lastlastAppPacketEvent (event) {
       if (event !== null && event.type === 'rx') {
         const latency = ((event.asn - event.packet.app.timestamp) *
-                         this.$_simulator_settings.tsch_slotDuration)
+                         this.$_simulator_runningSettings.tsch_slotDuration)
         this.numRecords += 1
         this.latencySum += latency
         if (this.latencyMax === undefined || this.latencyMax < latency) {

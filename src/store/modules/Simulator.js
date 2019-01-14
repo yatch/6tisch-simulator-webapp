@@ -10,7 +10,8 @@ export default {
     ],
     connectionStatus: 'disconnected',
     operationalStatus: null,
-    settings: null,
+    defaultSettings: null,
+    runningSettings: null,
     availableSFs: [],
     availableConnectivities: [],
     gitInfo: null
@@ -18,7 +19,8 @@ export default {
   getters: {
     connectionStatus (state) { return state.connectionStatus },
     operationalStatus (state) { return state.operationalStatus },
-    settings (state) { return state.settings },
+    defaultSettings (state) { return state.defaultSettings },
+    runningSettings (state) { return state.runningSettings },
     availableSFs (state) { return state.availableSFs },
     availableConnectivities (state) { return state.availableConnectivities },
     gitInfo (state) { return state.gitInfo }
@@ -30,8 +32,11 @@ export default {
     changeOperationalStatus (state, newStatus) {
       state.operationalStatus = newStatus
     },
-    updateSettings (state, newSettings) {
-      state.settings = Object.assign({}, newSettings)
+    saveDefaultSettings (state, defaultSettings) {
+      state.defaultSettings = defaultSettings
+    },
+    updateRunningSettings (state, newSettings) {
+      state.runningSettings = Object.assign({}, newSettings)
     },
     setAvailableSFs (state, sfList) {
       state.availableSFs = sfList
@@ -54,7 +59,7 @@ export default {
     start ({ state, commit, dispatch }, eel) {
       dispatch('simulation/reset', null, { root: true })
       commit('changeOperationalStatus', 'running')
-      eel.start(state.settings, state.defaultLogFilter)(() => {
+      eel.start(state.runningSettings, state.defaultLogFilter)(() => {
         if (state.operationalStatus === 'running') {
           // the simulation ends successfully
           dispatch('ready')
@@ -78,16 +83,27 @@ export default {
         dispatch('ready')
       })
     },
-    saveSettings ({ commit, dispatch }, settings) {
-      if (settings !== null &&
-          settings.exec_randomSeed === 'random') {
-        // pick an integer for the default seed
-        settings.exec_randomSeed = Math.floor(Math.random() * 10000)
+    saveDefaultSettings ({ commit, dispatch }, defaultSettings) {
+      commit('saveDefaultSettings', defaultSettings)
+      let newSettings
+      if (defaultSettings === null) {
+        newSettings = null
+      } else {
+        newSettings = Object.assign({}, defaultSettings.regular)
+        if (defaultSettings.regular.exec_randomSeed === 'random') {
+          // pick an integer for the default seed
+          newSettings.exec_randomSeed = Math.floor(Math.random() * 10000)
+        }
+        // copy the first items in combination settings to regular
+        for (let key in defaultSettings.combination) {
+          newSettings[key] = defaultSettings.combination[key][0]
+        }
       }
-      commit('updateSettings', settings)
-      if (settings !== null) {
-        dispatch('ready')
-      }
+      dispatch('updateRunningSettings', newSettings)
+      dispatch('ready')
+    },
+    updateRunningSettings ({ commit }, newSettings) {
+      commit('updateRunningSettings', newSettings)
     },
     setAvailableSFs ({ commit }, sfList) {
       commit('setAvailableSFs', sfList)

@@ -80,7 +80,7 @@ export default {
       if (event !== null) {
         this.numTx += 1
         if (event.type === 'rx') {
-          const slotDuration = this.$_simulator_settings.tsch_slotDuration
+          const slotDuration = this.$_simulator_runningSettings.tsch_slotDuration
           const latency = ((event.asn - event.packet.app.timestamp) *
                            slotDuration)
           this.sum += latency

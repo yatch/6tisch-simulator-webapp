@@ -112,17 +112,17 @@ export default {
       return this.matrixIsAvailable === false && this.errorMessage === null
     },
     numSlots () {
-      if (this.$_simulator_settings === null) {
+      if (this.$_simulator_runningSettings === null) {
         return 1
       } else {
-        return this.$_simulator_settings.tsch_slotframeLength
+        return this.$_simulator_runningSettings.tsch_slotframeLength
       }
     },
     numChannels () {
-      if (this.$_simulator_settings === null) {
+      if (this.$_simulator_runningSettings === null) {
         return 1
       } else {
-        return this.$_simulator_settings.phy_numChans
+        return this.$_simulator_runningSettings.phy_numChans
       }
     }
   },
@@ -141,7 +141,7 @@ export default {
         this.clearScheduleMatrix()
       }
     },
-    $_simulator_settings (settings) {
+    $_simulator_runningSettings (settings) {
       if (settings !== null) {
         this.initializeScheduleMatrix()
       }
@@ -162,7 +162,7 @@ export default {
   },
   mounted () {
     this.createScheduleMatrix()
-    if (this.$_simulator_settings !== null) {
+    if (this.$_simulator_runningSettings !== null) {
       this.initializeScheduleMatrix()
     }
   },
