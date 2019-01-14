@@ -5,6 +5,7 @@ import re
 import time
 import types
 import traceback
+import shutil
 import subprocess
 
 import eel
@@ -222,7 +223,24 @@ def start(settings, log_notification_filter='all'):
                 sim_settings.tsch_slotframeLength
             ):
             # simulation ends successfully
-            pass
+            # put config.json under the data directory
+            saving_settings = {
+                'combination': {},
+                'regular': settings.copy()
+            }
+            saving_settings['combination']['exec_numMotes'] = [
+                saving_settings['regular']['exec_numMotes']
+            ]
+            del saving_settings['regular']['exec_numMotes']
+            saving_config = get_default_config()
+            saving_config['settings'] = saving_settings
+            saving_config_path = os.path.join(
+                sim_settings.logRootDirectoryPath,
+                sim_settings.logDirectory,
+                'config.json'
+            )
+            with open(saving_config_path, 'w') as f:
+                json.dump(saving_config, f, indent=4)
         else:
             # simulation is aborted
             pass
