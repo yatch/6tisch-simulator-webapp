@@ -39,21 +39,9 @@ _elapsed_minutes = 0
 
 @eel.expose
 def get_default_settings():
-    # read the default config.json from the simulator source directory
-    default_config_path = os.path.join(
-        backend.get_simulator_path(),
-        'bin/config.json'
-    )
-    with open(default_config_path) as f:
-        default_config = json.load(f)
-    settings = default_config['settings']['regular']
-
-    # move all the combination params to regular using the first value
-    # of each
-    for key, values in default_config['settings']['combination'].items():
-        settings[key] = values[0]
-
-    return settings
+    with open(backend.SIM_CONFIG_PATH) as f:
+        config = json.load(f)
+    return config['settings']
 
 
 @eel.expose
