@@ -12,6 +12,7 @@
       v-for="item in items"
       :to="item.path"
       :key="item.name"
+      :disabled="item.disabled"
       @click.stop="item.action"
       >
       <v-list-tile-action>
@@ -29,9 +30,10 @@
 
 <script>
 import App from '@/mixins/App'
+import Simulator from '@/mixins/Simulator'
 
 export default {
-  mixins: [App],
+  mixins: [App, Simulator],
   data () {
     return {
       items: [
@@ -40,7 +42,7 @@ export default {
           path: '/',
           icon: 'home',
           action: () => { this.close() },
-          disabled: false
+          disabled: true
         },
         {
           name: 'Settings',
@@ -50,14 +52,14 @@ export default {
             this.$_app_settingsDialog = true
             this.close()
           },
-          disabled: () => { this.$_app_status === 'ready' }
+          disabled: true
         },
         {
           name: 'Results',
           path: '/results',
           icon: 'storage',
           action: () => { this.close() },
-          disabled: () => { this.$_app_status === 'ready' }
+          disabled: true
         },
         {
           name: 'Reload',
@@ -65,7 +67,8 @@ export default {
           icon: 'refresh',
           action: () => {
             location.reload()
-          }
+          },
+          disabled: true
         },
         {
           name: 'About',
@@ -75,7 +78,7 @@ export default {
             this.$_app_aboutDialog = true
             this.close()
           },
-          disabled: false
+          disabled: true
         }
       ]
     }
@@ -89,6 +92,36 @@ export default {
         }
       }
     },
+  },
+  watch: {
+    $_app_status (newStatus) {
+      this.items.forEach(item => {
+        if (item.name === 'Dashboard' || item.name === 'About') {
+          // these are always "enabled"
+          item.disabled = false
+        } else {
+          if (newStatus === 'ready') {
+            item.disabled = false
+          } else {
+            item.disabled = true
+          }
+        }
+      })
+    },
+    $_simulator_operationalStatus (newStatus) {
+      this.items.forEach(item => {
+        if (item.name === 'Dashboard' || item.name === 'About') {
+          // these are always "enabled"
+          item.disabled = false
+        } else {
+          if (newStatus === 'ready') {
+            item.disabled = false
+          } else {
+            item.disabled = true
+          }
+        }
+      })
+    }
   },
   methods: {
     close () { this.drawer = false }
