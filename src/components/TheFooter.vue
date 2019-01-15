@@ -71,6 +71,15 @@
         <v-tooltip top>
           <v-chip
             slot="activator"
+            v-if="$vuetify.breakpoint.smAndUp && connClass === 'K7'"
+            >
+            {{ connTrace }}
+          </v-chip>
+          <span>Connectivity Class</span>
+        </v-tooltip>
+        <v-tooltip top>
+          <v-chip
+            slot="activator"
             v-if="$vuetify.breakpoint.smAndUp"
             >
             {{ numMotes }}
@@ -122,6 +131,20 @@ export default {
         return 'unknown'
       } else {
         return this.$_simulator_runningSettings.conn_class
+      }
+    },
+    connTrace () {
+      if (this.$_simulator_runningSettings === null ||
+          this.$_simulator_runningSettings.conn_trace === undefined) {
+        return 'unknown'
+      } else {
+        const file_path = this.$_simulator_runningSettings.conn_trace
+        const trace_file_name = file_path.replace(/^.*[/]/, '')
+        if (trace_file_name.match(/.k7.gz$/)) {
+          return trace_file_name.split('.').slice(0, -2).join('.')
+        } else {
+          return trace_file_name
+        }
       }
     },
     numMotes () {

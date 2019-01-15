@@ -40,13 +40,14 @@
         <v-container pa-3>
           <v-layout align-center justify-center row>
             <v-flex xs3>{{ item.name }}</v-flex>
-            <v-flex xs3>
+            <v-flex xs4>
               <v-chip v-if="item.sfClass !== null">{{ item.sfClass }}</v-chip>
               <v-chip v-if="item.connClass !== null">{{ item.connClass }}</v-chip>
+              <v-chip v-if="item.connClass === 'K7'">{{ item.connTrace | traceName }}</v-chip>
               <v-chip v-if="item.numMotes !== null">{{ item.numMotes }}</v-chip>
             </v-flex>
             <v-spacer/>
-            <v-flex xs3>{{ item.lastModified }}</v-flex>
+            <v-flex xs2>{{ item.lastModified }}</v-flex>
             <v-flex xs2>
               <v-btn
                 :href="'/result/' + item.name + '.zip'"
@@ -67,7 +68,7 @@
   <v-layout justify-center>
     <v-flex xs6>
       <v-container>
-        <v-layout v-if="totalNumPages > 0">
+        <v-layout v-if="totalNumPages > 0" justify-center>
           <v-pagination
             v-model="currentPage"
             :length="totalNumPages"
@@ -100,6 +101,16 @@
 
 <script>
 export default {
+  filters: {
+    traceName (pathName) {
+      const trace_file_name = pathName.replace(/^.*[/]/, '')
+      if (trace_file_name.match(/.k7.gz$/)) {
+        return trace_file_name.split('.').slice(0, -2).join('.')
+      } else {
+        return trace_file_name
+      }
+    }
+  },
   data () {
     return {
       currentPage: 1,
@@ -134,6 +145,10 @@ export default {
           {
             key1: 'conn_class',
             key2: 'connClass',
+          },
+          {
+            key1: 'conn_trace',
+            key2: 'connTrace',
           },
           {
             key1: 'exec_numMotes',

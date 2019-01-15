@@ -74,6 +74,10 @@ export default {
         this.$store.dispatch('simulator/setAvailableConnectivities',
                              availableConnectivities)
       })
+      this.$_eel.get_available_trace_files()(availableTraceFiles => {
+        this.$store.dispatch('simulator/setAvailableTraceFiles',
+                             availableTraceFiles)
+      })
       this.$_eel.get_git_info()(gitInfo => {
         this.$store.dispatch('simulator/setGitInfo', gitInfo)
       })

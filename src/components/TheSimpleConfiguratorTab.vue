@@ -1,17 +1,19 @@
 <template>
   <v-card>
     <v-card-text>
-      <v-list
-        v-for="item in items"
-        :key="item.name"
-        >
-        <v-list-tile>
+      <v-list>
+        <v-list-tile
+          v-for="item in items"
+          :key="item.name"
+          :disabled="item.disabled"
+          >
           <v-list-tile-title>{{ item.title }}</v-list-tile-title>
           <v-text-field
             v-if="item.type === 'number'"
             v-model.number="item.model"
             single-line
             type="number"
+            :disabled="item.disabled"
             reverse
             />
           <v-select
@@ -19,6 +21,7 @@
             v-model="item.model"
             :items="item.selectItems"
             class="text-xs-right"
+            :disabled="item.disabled"
             reverse
             />
         </v-list-tile>
@@ -28,7 +31,13 @@
       <v-spacer></v-spacer>
       <v-btn @click.stop="resetSettings" color="error">Reset</v-btn>
       <v-btn @click.stop="cancelSettings" color="">Cancel</v-btn>
-      <v-btn @click.stop="saveSettings" color="primary">Save</v-btn>
+      <v-btn
+        @click.stop="saveSettings"
+        color="primary"
+        :disabled="disabledSave"
+        >
+        Save
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -47,52 +56,77 @@ export default {
           title: 'Scheduling Function',
           model: null,
           type: 'select',
-          selectItems: []
+          selectItems: [],
+          disabled: false
         },
         {
           name: 'conn_class',
           title: 'Connectivity Class',
           model: null,
           type: 'select',
-          selectItems: []
+          selectItems: [],
+          disabled: false
+        },
+        {
+          name: 'conn_trace',
+          title: 'Trace File',
+          model: null,
+          type: 'select',
+          selectItems: [],
+          disabled: true
         },
         {
           name: 'exec_numMotes',
           title: 'Number of Motes',
           model: 0,
-          type: 'number'
+          type: 'number',
+          disabled: false
         },
         {
           name: 'exec_randomSeed',
           title: 'Random Seed',
           model: 0,
-          type: 'number'
+          type: 'number',
+          disabled: false
         },
         {
           name: 'exec_numMinutes',
           title: 'Simulation Time (minutes)',
           model: 0,
-          type: 'number'
+          type: 'number',
+          disabled: false
         }
       ]
     }
   },
   computed: {
+    disabledSave () {
+      if (this.exec_numMotes === 0 ||
+          (this.conn_coass === 'K7' && this.conn_trace === null)) {
+        return true
+      } else {
+        return false
+      }
+    },
     sf_class: {
       get () { return this.items[0].model },
-      set (value) { return this.items[0].model = value }
+      set (value) { this.items[0].model = value }
     },
     conn_class: {
       get () { return this.items[1].model },
-      set (value) { return this.items[1].model = value }
+      set (value) { this.items[1].model = value }
+    },
+    conn_trace: {
+      get () { return this.items[2].model },
+      set (value) { this.items[2].model = value }
     },
     exec_numMotes: {
-      get () { return this.items[2].model },
-      set (value) { return this.items[2].model = value }
+      get () { return this.items[3].model },
+      set (value) { this.items[3].model = value }
     },
     exec_randomSeed: {
-      get () { return this.items[3].model },
-      set (value) { return this.items[3].model = value }
+      get () { return this.items[4].model },
+      set (value) { this.items[4].model = value }
     },
     exec_numSlotframesPerRun: {
       get () {
@@ -100,7 +134,7 @@ export default {
           return 0
         } else {
           const settings = this.$_simulator_runningSettings
-          return Math.ceil(this.items[4].model *
+          return Math.ceil(this.items[5].model *
                            60 /
                            settings.tsch_slotDuration /
                            settings.tsch_slotframeLength)
@@ -112,7 +146,7 @@ export default {
                                    settings.tsch_slotframeLength *
                                    settings.tsch_slotDuration /
                                    60)
-        return this.items[4].model = minutes
+        return this.items[5].model = minutes
       }
     },
     newSettings () {
@@ -121,6 +155,7 @@ export default {
         {
           sf_class: this.sf_class,
           conn_class: this.conn_class,
+          conn_trace: this.conn_trace,
           exec_numMotes: this.exec_numMotes,
           exec_randomSeed: this.exec_randomSeed,
           exec_numSlotframesPerRun: this.exec_numSlotframesPerRun
@@ -129,6 +164,25 @@ export default {
     }
   },
   watch: {
+    conn_class ()  {
+      if (this.conn_class === 'K7') {
+        // this item is for the trace file
+        this.items[2].disabled = false
+        // select the first item in the options
+        if (this.items[2].selectItems.length > 0) {
+          this.conn_trace = this.items[2].selectItems[0].value
+        }
+        // this item is for exec_numMotes
+        this.items[3].disabled = true
+      } else {
+        this.items[2].disabled = true
+        this.conn_trace = null
+        this.items[3].disabled = false
+      }
+    },
+    conn_trace (traceFilePath) {
+      this.exec_numMotes = this.getNumMotesFromTrace(traceFilePath)
+    },
     $_simulator_runningSettings (settings) {
       if (settings !== null) {
         this.sf_class = settings.sf_class
@@ -150,6 +204,24 @@ export default {
         this.items[1].selectItems = []
       } else {
         this.items[1].selectItems = value
+      }
+    },
+    $_simulator_availableTraceFiles (value) {
+      if (value === null) {
+        this.items[2].selectItems = []
+      } else {
+        this.items[2].selectItems = value.map(v => {
+          let text;
+          if (v.file_name.match(/.k7.gz$/)) {
+            text = v.file_name.split('.').slice(0, -2).join('.')
+          } else {
+            text = v.file_name
+          }
+          return {
+            text,
+            value: v.file_path
+          }
+        })
       }
     }
   },
@@ -177,7 +249,18 @@ export default {
     cancelSettings () {
       this.resetSettings()
       this.$_app_settingsDialog = false
-    }
-}
+    },
+    getNumMotesFromTrace (traceFilePath) {
+      const trace = this.$_simulator_availableTraceFiles.find(trace => {
+        return trace.file_path === traceFilePath
+      })
+
+      if (trace === undefined || trace.config === null) {
+        return 0
+      } else {
+        return trace.config.node_count
+      }
+    },
+  }
 }
 </script>

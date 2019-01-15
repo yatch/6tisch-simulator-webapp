@@ -24,6 +24,9 @@ export default {
     $_simulator_availableConnectivities () {
       return this.$store.getters['simulator/availableConnectivities']
     },
+    $_simulator_availableTraceFiles () {
+      return this.$store.getters['simulator/availableTraceFiles']
+    },
     $_simulator_gitInfo () {
       return this.$store.getters['simulator/gitInfo']
     }

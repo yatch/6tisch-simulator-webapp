@@ -14,6 +14,7 @@ export default {
     runningSettings: null,
     availableSFs: [],
     availableConnectivities: [],
+    availableTraceFiles: [],
     gitInfo: null
   },
   getters: {
@@ -23,6 +24,7 @@ export default {
     runningSettings (state) { return state.runningSettings },
     availableSFs (state) { return state.availableSFs },
     availableConnectivities (state) { return state.availableConnectivities },
+    availableTraceFiles (state) { return state.availableTraceFiles },
     gitInfo (state) { return state.gitInfo }
   },
   mutations: {
@@ -43,6 +45,9 @@ export default {
     },
     setAvailableConnectivities (state, connList) {
       state.availableConnectivities = connList
+    },
+    setAvailableTraceFiles (state, sfList) {
+      state.availableTraceFiles = sfList
     },
     setGitInfo (state, gitInfo) { state.gitInfo = gitInfo }
   },
@@ -110,6 +115,9 @@ export default {
     },
     setAvailableConnectivities ({ commit }, connList) {
       commit('setAvailableConnectivities', connList)
+    },
+    setAvailableTraceFiles ({ commit }, sfList) {
+      commit('setAvailableTraceFiles', sfList)
     },
     setGitInfo ({ commit }, gitInfo) { commit('setGitInfo', gitInfo) }
   }
