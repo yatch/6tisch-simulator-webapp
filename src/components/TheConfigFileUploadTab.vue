@@ -12,7 +12,10 @@
         </v-alert>
       </v-flex>
     </v-layout>
-    <v-card-text class="text-xs-center"> {{ selectedFileName }} </v-card-text>
+    <v-card-text
+      class="title text-xs-center"
+      > {{ selectedFileName }}
+    </v-card-text>
     <v-layout
       align-center
       justify-center

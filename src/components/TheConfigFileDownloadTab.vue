@@ -1,6 +1,6 @@
 <template>
 <v-card>
-  <v-card-text class="title text-xs-center">Click to Start Downloading...</v-card-text>
+  <v-card-text class="title text-xs-center">Click to Download config.json</v-card-text>
   <v-layout justify-center row fill-height>
     <v-btn
       icon
