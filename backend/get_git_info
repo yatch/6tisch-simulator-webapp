@@ -18,15 +18,24 @@ with open(backend.BACKEND_CONFIG_PATH) as f:
             config['simulator_path']
         )
     )
-print json.dumps({
-    'webapp': {
-        'repo': os.path.dirname(webapp_git_repo.git_dir),
-        'branch': webapp_git_repo.active_branch.name,
-        'short_hash': webapp_git_repo.head.object.hexsha[:7]
-    },
-    'simulator': {
-        'repo': os.path.dirname(simulator_git_repo.git_dir),
-        'branch': simulator_git_repo.active_branch.name,
-        'short_hash': simulator_git_repo.head.object.hexsha[:7]
-    }
-})
+
+ret = {}
+for repo in [webapp_git_repo, simulator_git_repo]:
+    info = {}
+    info['repo'] = os.path.dirname(repo.git_dir)
+
+    try:
+        info['branch'] = webapp_git_repo.active_branch.name
+    except TypeError:
+        info['branch'] = 'unknown'
+
+    info['short_hash'] = repo.head.object.hexsha[:7]
+
+    if repo == webapp_git_repo:
+        ret['webapp'] = info
+    elif repo == simulator_git_repo:
+        ret['simulator'] = info
+    else:
+        raise NotImplementedError()
+
+print json.dumps(ret)
