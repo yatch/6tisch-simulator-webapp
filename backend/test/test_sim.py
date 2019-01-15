@@ -20,7 +20,7 @@ def call_exposed_api(func, *args):
 
 @pytest.fixture(scope='module', autouse=True)
 def setup_default_config_json():
-    backend.utils._create_config_json()
+    backend.utils.create_config_json()
     yield
     backend.utils._delete_config_json()
 

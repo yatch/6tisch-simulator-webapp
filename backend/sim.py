@@ -42,6 +42,10 @@ _elapsed_minutes = 0
 
 @eel.expose
 def get_default_config():
+    if os.path.exists(backend.SIM_CONFIG_PATH) is False:
+        # someone has deleted our config.json file... recreate one
+        backend.utils.create_config_json()
+
     with open(backend.SIM_CONFIG_PATH, 'r') as f:
         config = json.load(f)
     return config

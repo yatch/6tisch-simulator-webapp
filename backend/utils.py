@@ -41,7 +41,7 @@ def start_server():
     eel.init(backend.DEFAULT_WEB_ROOT_PATH)
 
     try:
-        _create_config_json()
+        create_config_json()
         _start()
     finally:
         _delete_config_json()
@@ -67,7 +67,7 @@ def _start():
     )
 
 
-def _create_config_json():
+def create_config_json():
     # read the default config.json from the simulator source directory
     default_config_path = os.path.join(
         backend.get_simulator_path(),
