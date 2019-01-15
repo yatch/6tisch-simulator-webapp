@@ -14,10 +14,6 @@ import backend
 # need to import backend.sim to expose its APIs
 import backend.sim
 
-# DON'T CHANGE THIS PORT NUMBER, which is referred when you run "$ npm
-# run serve"
-LISTEN_PORT = 8081
-
 CONFIG_JSON_TEMPLATE = {
     'version': 0,
     'execution': {
@@ -36,31 +32,39 @@ def on_close_callback(page, sockets):
     backend.sim.clear_sim()
 
 
-def start_server():
+def start_server(dev_mode=False):
     # initialize eel
-    eel.init(backend.DEFAULT_WEB_ROOT_PATH)
+    backend.init_web_root_path(dev_mode)
+    web_root = backend.get_web_root_path()
+    eel.init(web_root)
 
     try:
         create_config_json()
-        _start()
+        _start(dev_mode)
     finally:
         _delete_config_json()
 
 
-def _start():
+def _start(dev_mode):
     # start the server
+
     with open(backend.BACKEND_CONFIG_PATH) as f:
         config = json.load(f)
+
+    if dev_mode:
+        listen_port = backend.LISTEN_PORT_FOR_DEVELOPMENT
+    else:
+        listen_port = backend.LISTEN_PORT_FOR_PRODUCTION
     print 'Starting the backend server on {0}:{1}'.format(
         config['host'],
-        LISTEN_PORT
+        listen_port
     )
     sys.stdout.flush()
     eel.start(
         backend.START_URL,
         options = {
             'host': config['host'],
-            'port': LISTEN_PORT,
+            'port': listen_port,
             'mode': None
         },
         callback = on_close_callback

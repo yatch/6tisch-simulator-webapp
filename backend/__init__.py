@@ -8,10 +8,37 @@ BACKEND_BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 BACKEND_CONFIG_PATH = os.path.join(BACKEND_BASE_PATH, '../backend.config.json')
 BACKEND_VAR_DIR_PATH = os.path.join(BACKEND_BASE_PATH, 'var')
 SIM_DATA_PATH = os.path.join(BACKEND_BASE_PATH, '../simData')
-DEFAULT_WEB_ROOT_PATH = os.path.join(BACKEND_BASE_PATH, '../public')
 SIM_CONFIG_PATH = os.path.join(BACKEND_VAR_DIR_PATH, 'config.json')
 START_URL = '/index.html'
 
+# DON'T CHANGE THIS PORT NUMBER, which is referred when you run "$ npm
+# run serve"
+LISTEN_PORT_FOR_DEVELOPMENT = 8081
+WEB_ROOT_PATH_FOR_DEVELOPMENT = os.path.join(BACKEND_BASE_PATH, '../public')
+
+LISTEN_PORT_FOR_PRODUCTION = 8080
+WEB_ROOT_PATH_FOR_PRODUCTION = os.path.join(BACKEND_BASE_PATH, '../dist')
+
+web_root_path = None
+
+
+def init_web_root_path(dev_mode=False):
+    global web_root_path
+    if dev_mode:
+        web_root_path = WEB_ROOT_PATH_FOR_DEVELOPMENT
+    else:
+        web_root_path = WEB_ROOT_PATH_FOR_PRODUCTION
+        if os.path.exists(web_root_path) is False:
+            sys.stderr.write(
+                '"dist" is not available; did you run "npm run build"?\n'
+            )
+            sys.stderr.write('backend server is shutting down...\n')
+            sys.exit(1)
+
+
+def get_web_root_path():
+    global web_root_path
+    return web_root_path
 
 def get_simulator_path():
     with open(BACKEND_CONFIG_PATH) as f:

@@ -29,6 +29,13 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument(
+    '--dev',
+    action  = 'store_true',
+    default = False,
+    help    = 'start for development',
+    dest    = 'dev_mode'
+)
+parser.add_argument(
     '--auto-restart',
     action  = 'store_true',
     default = False,
@@ -48,9 +55,13 @@ if len(sys.argv) == 1:
 # functions to start/stop sever
 sever_process = None
 
-def start_server():
+def start_server(dev_mode):
     global server_process
-    server_process = subprocess.Popen([__file__])
+    if dev_mode:
+        args = ['--dev']
+    else:
+        args = []
+    server_process = subprocess.Popen([__file__] + args)
 
 def stop_server():
     global server_process
@@ -60,7 +71,7 @@ def stop_server():
 import subprocess
 if args.auto_restart is True:
     # start the server in a separate process
-    start_server()
+    start_server(args.dev_mode)
 
     # watch file system events under BACKEND_ROOTDIR_PATH and
     # SIM_ENGINE_MODULE_PATH and restart the server on any event
@@ -76,7 +87,7 @@ if args.auto_restart is True:
         def on_any_event(self, event):
             print 'restarting server...'
             stop_server()
-            start_server()
+            start_server(args.dev_mode)
 
     # setup watchdog observer
     event_handler = PythonFileEventHandler()
@@ -118,4 +129,4 @@ else:
     # submodules before importing 'watchdog' because 'watchdog'
     # doesn't work with 'gevent' that is imported by 'backend'
     import backend.utils
-    backend.utils.start_server()
+    backend.utils.start_server(args.dev_mode)

@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "concurrently \"npm:backend-server\" \"npm:dev-server\"",
+    "serve": "concurrently \"npm:backend-dev-server\" \"npm:dev-server\"",
     "build": "vue-cli-service build",
-    "test": "concurrently -k -s first \"npm:backend-server\" \"npm:test:unit\"",
+    "test": "concurrently -k -s first \"npm:backend-dev-server\" \"npm:test:unit\"",
     "lint": "vue-cli-service lint",
-    "backend-server": "backend/start --auto-restart",
+    "backend-dev-server": "backend/start --auto-restart --dev",
     "dev-server": "vue-cli-service serve",
     "test:backend": "pytest backend",
     "test:unit": "vue-cli-service test:unit"

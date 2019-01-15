@@ -6,6 +6,13 @@ import bottle as btl
 
 import backend
 
+@btl.get('/')
+def get_index():
+    return btl.static_file(
+        'index.html',
+        root=backend.get_web_root_path()
+    )
+
 
 @btl.get('/config.json')
 def get_config_json():
