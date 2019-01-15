@@ -30,6 +30,16 @@ def get_simulator_path():
         )
 
 
+def get_trace_dir_path():
+    with open(BACKEND_CONFIG_PATH) as f:
+        config = json.load(f)
+        trace_dir_path = config['trace_dir_path']
+
+    if trace_dir_path is None:
+        raise ValueError('trace_dir_path is not found')
+    else:
+        return trace_dir_path
+
 # add the path of the simulator source directory to Python module
 # search path list so that SimEngine and other relevant modules can be
 # imported

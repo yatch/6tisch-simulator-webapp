@@ -1,4 +1,5 @@
 import json
+import gzip
 import os
 import subprocess
 
@@ -142,6 +143,25 @@ def test_get_available_connectivities():
     assert 'Linear' in ret
     assert 'Random' in ret
     assert 'K7' in ret
+
+
+def test_get_available_trace_files():
+    trace_file_name = 'grenoble.k7.gz'
+    trace_dir_path = backend.get_trace_dir_path()
+    trace_file_path = os.path.join(trace_dir_path, trace_file_name)
+
+    with gzip.GzipFile(trace_file_path, 'r') as f:
+        config_line = f.readline()
+        config = json.loads(config_line)
+
+    assert len(os.listdir(trace_dir_path)) == 1
+    assert os.path.exists(trace_file_path) is True
+
+    ret = backend.sim.get_available_trace_files()
+    assert len(ret) == 1
+    assert ret[0]['file_name'] == trace_file_name
+    assert ret[0]['file_path'] == os.path.abspath(trace_file_path)
+    assert ret[0]['config'] == config
 
 
 def test_start(default_settings):

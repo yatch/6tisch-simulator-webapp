@@ -1,4 +1,5 @@
 import json
+import gzip
 import math
 import os
 import re
@@ -120,6 +121,23 @@ def get_available_scheduling_functions():
         re.sub(r'SchedulingFunction(\w+)', r'\1', elem),
         ret_val
     )
+
+
+@eel.expose
+def get_available_trace_files():
+    trace_dir_path = backend.get_trace_dir_path()
+    ret = []
+    for file_name in os.listdir(trace_dir_path):
+        trace_file_path = os.path.join(trace_dir_path, file_name)
+        with gzip.GzipFile(trace_file_path, 'r') as f:
+            config_line = f.readline()
+            config = json.loads(config_line)
+        ret.append({
+            'file_name': file_name,
+            'file_path': os.path.abspath(trace_file_path),
+            'config': config
+        })
+    return ret
 
 
 @eel.expose
