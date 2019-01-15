@@ -22,7 +22,7 @@ def get_result_zip_file(result_zip_file_name):
         result_subdir_name
     )
     if os.path.exists(result_subdir_path):
-        var_dir = os.path.join(backend.BACKEND_BASE_PATH, 'var')
+        var_dir = backend.BACKEND_VAR_DIR_PATH
         fd, tmp_file_path = tempfile.mkstemp(
             suffix = '.zip',
             prefix = 'tmp',

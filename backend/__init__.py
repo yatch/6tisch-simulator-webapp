@@ -6,9 +6,10 @@ import gevent.monkey
 
 BACKEND_BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 BACKEND_CONFIG_PATH = os.path.join(BACKEND_BASE_PATH, '../backend.config.json')
+BACKEND_VAR_DIR_PATH = os.path.join(BACKEND_BASE_PATH, 'var')
 SIM_DATA_PATH = os.path.join(BACKEND_BASE_PATH, '../simData')
 DEFAULT_WEB_ROOT_PATH = os.path.join(BACKEND_BASE_PATH, '../public')
-SIM_CONFIG_PATH = os.path.join(BACKEND_BASE_PATH, 'var/config.json')
+SIM_CONFIG_PATH = os.path.join(BACKEND_VAR_DIR_PATH, 'config.json')
 START_URL = '/index.html'
 
 
