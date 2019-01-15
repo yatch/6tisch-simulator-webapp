@@ -2,11 +2,11 @@ import json
 import math
 import os
 import re
+import shutil
+import subprocess
 import time
 import types
 import traceback
-import shutil
-import subprocess
 
 import eel
 import gevent
@@ -305,6 +305,63 @@ def abort():
         return {
             'status': RETURN_STATUS_SUCCESS
         }
+
+
+@eel.expose
+def get_sim_data_path():
+    return os.path.abspath(backend.SIM_DATA_PATH)
+
+
+@eel.expose
+def delete_all_results():
+    for result_subdir_name in os.listdir(backend.SIM_DATA_PATH):
+        delete_result(result_subdir_name)
+
+
+@eel.expose
+def delete_result(result_subdir_name):
+    path = os.path.join(backend.SIM_DATA_PATH, result_subdir_name)
+    shutil.rmtree(path)
+
+
+@eel.expose
+def get_total_number_of_results():
+    return len(os.listdir(backend.SIM_DATA_PATH))
+
+
+@eel.expose
+def get_results(start_index, max_num_results):
+    results = sorted(os.listdir(backend.SIM_DATA_PATH), reverse=True)
+    end_index = start_index + max_num_results
+
+    ret = []
+    for result in results[start_index:end_index]:
+        result_path = os.path.join(backend.SIM_DATA_PATH, result)
+        last_modified = time.strftime(
+            '%b %d %Y %H:%M:%S',
+            time.localtime(os.path.getmtime(result_path))
+        )
+        try:
+            with open(os.path.join(result_path, 'config.json')) as f:
+                config = json.load(f)
+                settings = config['settings']['regular']
+                assert len(config['settings']['combination'])
+                assert 'exec_numMotes' in config['settings']['combination']
+                assert (
+                    len(config['settings']['combination']['exec_numMotes']) == 1
+                )
+                settings['exec_numMotes'] = (
+                    config['settings']['combination']['exec_numMotes'][0]
+                )
+        except (IOError, ValueError, TypeError):
+            settings = None
+        ret.append({
+            'name': result,
+            'last_modified': last_modified,
+            'settings': settings
+        })
+
+    return ret
 
 
 def _overwrite_sim_engine_actionEndSlotframe():

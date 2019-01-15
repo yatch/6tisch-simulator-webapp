@@ -3,10 +3,14 @@ import os
 import subprocess
 import sys
 
+# import backend.routes before eel so that our custom routes are
+# processed first. this is needed to provide a GET route to
+# '/results/*.zip'. otherwise route to <path:path> in Eel will
+# prevents that.
+import backend.routes
 import eel
 
 import backend
-import backend.routes
 # need to import backend.sim to expose its APIs
 import backend.sim
 
