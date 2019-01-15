@@ -10,8 +10,8 @@ import backend.routes
 # need to import backend.sim to expose its APIs
 import backend.sim
 
-# DON'T CHANGE THIS PORT NUMBER, otherwise "$ npm run serve" doesn't
-# work as you expect
+# DON'T CHANGE THIS PORT NUMBER, which is referred when you run "$ npm
+# run serve"
 LISTEN_PORT = 8081
 
 CONFIG_JSON_TEMPLATE = {
