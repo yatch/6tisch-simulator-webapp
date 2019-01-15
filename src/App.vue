@@ -3,7 +3,7 @@
   <TheToolbar/>
   <TheNavigationDrawer/>
   <v-content fluid>
-    <v-layout align-center justify-center row wrap fill-height>
+    <v-layout align-start justify-center row wrap fill-height>
       <router-view/>
     </v-layout>
   </v-content>

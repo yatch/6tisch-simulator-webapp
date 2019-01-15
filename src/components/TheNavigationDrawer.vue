@@ -53,6 +53,13 @@ export default {
           disabled: () => { this.$_app_status === 'ready' }
         },
         {
+          name: 'Results',
+          path: '/results',
+          icon: 'storage',
+          action: () => { this.close() },
+          disabled: () => { this.$_app_status === 'ready' }
+        },
+        {
           name: 'Reload',
           path: undefined,
           icon: 'refresh',
