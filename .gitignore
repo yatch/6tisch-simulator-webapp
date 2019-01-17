@@ -21,6 +21,9 @@ yarn-error.log*
 *.sw*
 
 # Python related files
-backend/var
 .pytest_cache
 *.pyc
+
+# App specific
+backend/var
+simData
