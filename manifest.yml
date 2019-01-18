@@ -1,0 +1,7 @@
+---
+applications:
+- name: 6tisch-simulator-webapp
+  memory: 128M
+  buildpack: https://github.com/cloudfoundry/python-buildpack.git
+  random-route: true
+  command: backend/start
