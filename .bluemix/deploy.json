@@ -1,0 +1,110 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "messages": {
+        "$i18n": "locales.yml"
+    },
+    "title": {
+        "$ref": "#/messages/deploy.title"
+    },
+    "longDescription": {
+        "$ref": "#/messages/deploy.longDescription"
+    },
+    "type": "object",
+    "properties": {
+        "dev-region": {
+            "description": "The bluemix region",
+            "type": "string"
+        },
+        "dev-organization": {
+            "description": "The bluemix org",
+            "type": "string"
+        },
+        "dev-space": {
+            "description": "The bluemix space",
+            "type": "string"
+        },
+        "api-key": {
+            "description": {
+                "$ref": "#/messages/deploy.apiKeyDescription"
+            },
+            "type": "string"
+        },
+        "app-name": {
+            "description": {
+                "$ref": "#/messages/deploy.appDescription"
+            },
+            "type": "string"
+        }
+    },
+    "required": [
+        "dev-region",
+        "dev-organization",
+        "dev-space",
+        "app-name",
+        "api-key"
+    ],
+    "form": [
+        {
+            "type": "validator",
+            "url": "/devops/setup/bm-helper/helper.html"
+        },
+        {
+            "type": "text",
+            "readonly": false,
+            "title": {
+                "$ref": "#/messages/deploy.appName"
+            },
+            "key": "app-name"
+        },
+         {
+	        "type": "password",
+	        "readonly": false,
+	        "title": {
+                   "$ref": "#/messages/deploy.apiKeyTitle"
+                },
+	        "key": "api-key"
+        },
+        {
+            "type": "table",
+            "columnCount": 3,
+            "widths": [
+                "28%",
+                "28%",
+                "28%"
+            ],
+            "items": [
+                {
+                    "type": "label",
+                    "title": {
+                        "$ref": "#/messages/region"
+                    }
+                },
+                {
+                    "type": "label",
+                     "title": {
+                        "$ref": "#/messages/organization"
+                    }
+                },
+                {
+                    "type": "label",
+                    "title": {
+                        "$ref": "#/messages/space"
+                    }
+                },
+                {
+                    "type": "select",
+                    "key": "dev-region"
+                },
+                {
+                    "type": "select",
+                    "key": "dev-organization"
+                },
+                {
+                    "type": "select",
+                    "key": "dev-space",
+                    "readonly": false
+                }
+            ]
+        }
+    ]
+}
