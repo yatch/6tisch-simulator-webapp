@@ -116,7 +116,8 @@ export default {
   computed: {
     running () { return this.$_simulator_operationalStatus === 'running' },
     disabled () {
-      return this.$_app_status !== 'ready'
+      return (this.$_app_status !== 'ready' ||
+              this.$route.path !== '/')
     },
     ready() { return this.$_simulator_operationalStatus === 'ready' },
     sfClass () {
