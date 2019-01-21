@@ -137,7 +137,8 @@ export default {
     },
     connTrace () {
       if (this.$_simulator_runningSettings === null ||
-          this.$_simulator_runningSettings.conn_trace === undefined) {
+          this.$_simulator_runningSettings.conn_trace === undefined ||
+          this.$_simulator_runningSettings.conn_trace === null) {
         return 'unknown'
       } else {
         const file_path = this.$_simulator_runningSettings.conn_trace
