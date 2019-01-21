@@ -5,7 +5,7 @@
   >
   <v-tooltip bottom>
     <v-card slot="activator" height="100%">
-      <v-card-title class="body-2">
+      <v-card-title class="body-2 pb-0">
         <slot name="title"/>
       </v-card-title>
       <v-card-text class="title">
