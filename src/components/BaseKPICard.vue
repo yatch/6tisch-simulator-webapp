@@ -1,7 +1,7 @@
 <template>
 <v-flex
   xs12
-  md4
+  md3
   >
   <v-tooltip bottom>
     <v-card slot="activator" height="100%">

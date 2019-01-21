@@ -6,6 +6,10 @@ export default {
       'packet_dropped',
       'tsch.add_cell',
       'tsch.delete_cell',
+      'tsch.synced',
+      'tsch.desynced',
+      'secjoin.joined',
+      'secjoin.failed',
       'rpl.churn'
     ],
     connectionStatus: 'disconnected',

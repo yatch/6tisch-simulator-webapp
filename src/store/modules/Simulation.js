@@ -5,6 +5,8 @@ export default {
     lastTschCellAllocationEvent: null,
     lastAppPacketEvent: null,
     lastPacketDropEvent: null,
+    lastTschSyncEvent: null,
+    lastSecJoinEvent: null,
     elapsedMinutes: null,
     motes: []
   },
@@ -15,6 +17,8 @@ export default {
     },
     lastAppPacketEvent (state) { return state.lastAppPacketEvent },
     lastPacketDropEvent (state) { return state.lastPacketDropEvent },
+    lastTschSyncEvent (state) { return state.lastTschSyncEvent },
+    lastSecJoinEvent (state) { return state.lastSecJoinEvent },
     elapsedMinutes (state) { return state.elapsedMinutes}
   },
   mutations: {
@@ -84,6 +88,8 @@ export default {
         }
       }
     },
+    updateLastTschSyncEvent (state, event) { state.lastTschSyncEvent = event },
+    updateLastSecJoinEvent (state, event) { state.lastSecJoinEvent = event },
     updateElapsedMinutes (state, value) { state.elapsedMinutes = value },
     updateMoteAddress (state, event) {
       if (event === null) {
@@ -125,6 +131,12 @@ export default {
         commit('updateLastTschCellAllocationEvent', event)
       } else if (event._type === 'rpl.churn') {
         commit('updateLastRplParentChangeEvent', event)
+      } else if (event._type === 'tsch.synced' ||
+                 event._type === 'tsch.desynced') {
+        commit('updateLastTschSyncEvent', event)
+      } else if (event._type === 'secjoin.joined' ||
+                 event._type === 'secjoin.failed') {
+        commit('updateLastSecJoinEvent', event)
       }
     },
     reset ( { commit, rootGetters }) {

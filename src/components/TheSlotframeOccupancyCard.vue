@@ -11,8 +11,8 @@
         :key="item.name"
         justify-center
         >
-        <v-flex xs2 md3>{{ item.name | capitalize }}</v-flex>
-        <v-flex xs3 md4 text-xs-right>{{ item.value | numCellsString }}</v-flex>
+        <v-flex xs2 md2>{{ item.name | capitalize }}</v-flex>
+        <v-flex xs3 md6 text-xs-right>{{ item.value | numCellsString }}</v-flex>
       </v-layout>
     </v-container>
   </v-flex>

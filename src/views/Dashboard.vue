@@ -10,6 +10,7 @@
       <TheOverallE2ePdrCard/>
       <TheOverallE2eLatencyCard/>
       <TheSlotframeOccupancyCard/>
+      <TheMoteStatsCard/>
     </v-layout>
     <v-layout
       row
@@ -34,6 +35,7 @@
 import TheOverallE2ePdrCard from '@/components/TheOverallE2ePdrCard'
 import TheOverallE2eLatencyCard from '@/components/TheOverallE2eLatencyCard'
 import TheSlotframeOccupancyCard from '@/components/TheSlotframeOccupancyCard'
+import TheMoteStatsCard from '@/components/TheMoteStatsCard'
 import TheE2ePdrChartCard from '@/components/TheE2ePdrChartCard'
 import TheE2eLatencyChartCard from '@/components/TheE2eLatencyChartCard'
 import ThePacketDropChartCard from '@/components/ThePacketDropChartCard'
@@ -45,6 +47,7 @@ export default {
     TheOverallE2ePdrCard,
     TheOverallE2eLatencyCard,
     TheSlotframeOccupancyCard,
+    TheMoteStatsCard,
     TheE2ePdrChartCard,
     TheE2eLatencyChartCard,
     ThePacketDropChartCard,

@@ -14,6 +14,12 @@ export default {
     },
     $_simulation_lastRplParentChangeEvent () {
       return this.$store.getters['simulation/lastRplParentChangeEvent']
+    },
+    $_simulation_lastTschSyncEvent () {
+      return this.$store.getters['simulation/lastTschSyncEvent']
+    },
+    $_simulation_lastSecJoinEvent () {
+      return this.$store.getters['simulation/lastSecJoinEvent']
     }
   }
 }
