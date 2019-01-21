@@ -25,7 +25,7 @@ npm install
 npm run build
 
 # fetch the simulator source code
-git clone --single-branch --branch develop https://bitbucket.org/6tisch/simulator.git simulator
+git clone --single-branch --branch master https://bitbucket.org/6tisch/simulator.git simulator
 
 # append its dependencies to requirements.txt so that they will
 # be installed during deployment
