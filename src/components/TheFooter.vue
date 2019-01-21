@@ -12,6 +12,7 @@
       <v-layout justify-center>
         <v-flex xs12>
           <v-progress-linear
+            :indeterminate="running && progress < 5"
             :value="progress"
             color="pink lighten-3"
             background-color="grey lighten-1"
