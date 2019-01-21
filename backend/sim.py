@@ -4,6 +4,7 @@ import math
 import os
 import re
 import shutil
+import signal
 import subprocess
 import time
 import types
@@ -11,6 +12,7 @@ import traceback
 
 import eel
 import gevent
+import psutil
 
 import backend
 import backend.utils
@@ -384,6 +386,26 @@ def get_results(start_index, max_num_results):
         })
 
     return ret
+
+
+@eel.expose
+def shutdown_backend():
+    parent_backend_server_process = None
+    parent_pid = os.getppid()
+    for proc in psutil.process_iter(attrs=['pid', 'cmdline']):
+        if proc.info['cmdline'] is None:
+            continue
+        elif 'backend/start' in proc.info['cmdline']:
+            if proc.info['pid'] == parent_pid:
+                parent_backend_server_process = proc
+
+    if parent_backend_server_process is None:
+        # this backend process was invoked directly
+        os.kill(os.getpid(), signal.SIGINT)
+    else:
+        # this backend process was invoked by the parent process of
+        # 'backend/start --auto-restart'; kill our parent process
+        os.kill(parent_pid, signal.SIGINT)
 
 
 def _overwrite_sim_engine_actionEndSlotframe():

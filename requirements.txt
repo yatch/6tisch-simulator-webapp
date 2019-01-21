@@ -2,3 +2,4 @@ eel>=0.9.11
 pytest
 watchdog
 gitpython
+psutil

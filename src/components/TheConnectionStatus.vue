@@ -64,7 +64,7 @@ export default {
   },
   watch: {
     $_simulator_connectionStatus (status) {
-      if (status === 'disconnected') {
+      if (status === 'disconnected' && this.$_app_autoReload === true) {
         this.$_app_settingsDialog = false
         this.$_app_aboutDialog = false
         this.dialog = true

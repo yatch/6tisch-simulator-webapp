@@ -1,38 +1,43 @@
 <template>
-<v-navigation-drawer
-  fixed
-  temporary
-  v-model="drawer"
-  mobile-break-point="false"
-  right
-  app
-  >
-  <v-list dense>
-    <v-list-tile
-      v-for="item in items"
-      :to="item.path"
-      :key="item.name"
-      :disabled="item.disabled"
-      @click.stop="item.action"
-      >
-      <v-list-tile-action>
-        <v-icon>{{ item.icon }}</v-icon>
-      </v-list-tile-action>
-      <v-list-tile-content>
-        <v-list-tile-title>
-          {{ item.name }}
-        </v-list-tile-title>
-      </v-list-tile-content>
-    </v-list-tile>
-  </v-list>
-</v-navigation-drawer>
+<div>
+  <v-navigation-drawer
+    fixed
+    temporary
+    v-model="drawer"
+    mobile-break-point="false"
+    right
+    app
+    >
+    <v-list dense>
+      <v-list-tile
+        v-for="item in items"
+        :to="item.path"
+        :key="item.name"
+        :disabled="item.disabled"
+        @click.stop="item.action"
+        >
+        <v-list-tile-action>
+          <v-icon>{{ item.icon }}</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>
+            {{ item.name }}
+          </v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+    </v-list>
+  </v-navigation-drawer>
+  <TheShutdownDialog/>
+</div>
 </template>
 
 <script>
 import App from '@/mixins/App'
 import Simulator from '@/mixins/Simulator'
+import TheShutdownDialog from '@/components/TheShutdownDialog'
 
 export default {
+  components: { TheShutdownDialog },
   mixins: [App, Simulator],
   data () {
     return {
@@ -67,6 +72,16 @@ export default {
           icon: 'refresh',
           action: () => {
             location.reload()
+          },
+          disabled: true
+        },
+        {
+          name: 'Shutdown',
+          path: undefined,
+          icon: 'power_settings_new',
+          action: () => {
+            this.$_app_shutdownDialog = true
+            this.close()
           },
           disabled: true
         },
@@ -115,6 +130,17 @@ export default {
           item.disabled = false
         } else {
           if (newStatus === 'ready') {
+            item.disabled = false
+          } else {
+            item.disabled = true
+          }
+        }
+      })
+    },
+    $_simulator_connectionStatus (newStatus) {
+      this.items.forEach(item => {
+        if (newStatus === 'disconnected') {
+          if (item.name === 'Reload') {
             item.disabled = false
           } else {
             item.disabled = true
