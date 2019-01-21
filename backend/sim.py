@@ -133,17 +133,19 @@ def get_available_scheduling_functions():
 def get_available_trace_files():
     trace_dir_path = backend.get_trace_dir_path()
     ret = []
-    for file_name in os.listdir(trace_dir_path):
-        trace_file_path = os.path.join(trace_dir_path, file_name)
-        with gzip.GzipFile(trace_file_path, 'r') as f:
-            config_line = f.readline()
-            config = json.loads(config_line)
-        ret.append({
-            'file_name': file_name,
-            'file_path': os.path.abspath(trace_file_path),
-            'config': config
-        })
-    return ret
+    for trace_dir_path, dirs, files in os.walk(trace_dir_path):
+        for file_name in files:
+            if re.match(r'.+\.k7\.gz$', file_name) is not None:
+                trace_file_path = os.path.join(trace_dir_path, file_name)
+                with gzip.GzipFile(trace_file_path, 'r') as f:
+                    config_line = f.readline()
+                    config = json.loads(config_line)
+                ret.append({
+                    'file_name': file_name,
+                    'file_path': os.path.abspath(trace_file_path),
+                    'config': config
+                })
+    return sorted(ret, key=lambda item: item['file_name'])
 
 
 @eel.expose
