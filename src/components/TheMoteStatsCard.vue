@@ -57,6 +57,7 @@ export default {
   watch: {
     $_simulator_operationalStatus (newStatus, oldStatus) {
       if (newStatus === 'running' && oldStatus === 'ready') {
+        this.reset()
         this.numMotes = this.$_simulator_runningSettings.exec_numMotes
       }
     },
