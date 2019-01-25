@@ -159,7 +159,9 @@ def get_git_info():
         backend.BACKEND_BASE_PATH,
         'get_git_info'
     )
-    return json.loads(subprocess.check_output([get_git_info_cmd_path]))
+    return json.loads(subprocess.check_output(
+        [sys.executable, get_git_info_cmd_path])
+    )
 
 
 @eel.expose
