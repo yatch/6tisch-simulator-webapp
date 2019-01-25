@@ -80,7 +80,7 @@ def put_default_config(config_str):
 
     # check the given config
     popen = subprocess.Popen(
-        [check_config_json, '-s', '-c', '-'],
+        [sys.executable, check_config_json, '-s', '-c', '-'],
         stdin  = subprocess.PIPE,
         stdout = subprocess.PIPE,
         stderr = subprocess.PIPE

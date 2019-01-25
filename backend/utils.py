@@ -86,7 +86,7 @@ def create_config_json():
         'bin/check_config_json.py'
     )
     popen = subprocess.Popen(
-        [check_config_json, '-s', '-c', '-'],
+        [sys.executable, check_config_json, '-s', '-c', '-'],
         stdin  = subprocess.PIPE,
         stdout = subprocess.PIPE
     )
