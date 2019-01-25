@@ -54,7 +54,6 @@ def get_result_zip_file(result_zip_file_name):
             )
         finally:
             os.close(fd)
-            os.remove(tmp_file_path)
         return ret
     else:
         btl.abort(404, 'Not Found')

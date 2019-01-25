@@ -33,6 +33,10 @@ def on_close_callback(page, sockets):
 
 
 def start_server(dev_mode=False):
+    # prepare 'var' directory
+    if os.path.exists(backend.BACKEND_VAR_DIR_PATH) is False:
+        os.mkdir(backend.BACKEND_VAR_DIR_PATH)
+
     # initialize eel
     backend.init_web_root_path(dev_mode)
     web_root = backend.get_web_root_path()
@@ -43,6 +47,7 @@ def start_server(dev_mode=False):
         _start(dev_mode)
     finally:
         _delete_config_json()
+        _delete_tmp_files()
 
 
 def _start(dev_mode):
@@ -69,6 +74,7 @@ def _start(dev_mode):
         },
         callback = on_close_callback
     )
+
 
 
 def create_config_json():
@@ -110,4 +116,14 @@ def create_config_json():
 
 def _delete_config_json():
     if os.path.exists(backend.SIM_CONFIG_PATH):
+        print 'removing {0}'.format(backend.SIM_CONFIG_PATH)
         os.remove(backend.SIM_CONFIG_PATH)
+
+
+def _delete_tmp_files():
+    for root, _, files in os.walk(backend.BACKEND_VAR_DIR_PATH):
+        for file_name in files:
+            if file_name.startswith('tmp'):
+                tmp_file_path = os.path.join(root, file_name)
+                print 'removing {0}'.format(tmp_file_path)
+                os.remove(tmp_file_path)
