@@ -29,6 +29,9 @@ export default {
     },
     $_simulator_gitInfo () {
       return this.$store.getters['simulator/gitInfo']
+    },
+    $_simulator_crashReport () {
+      return this.$store.getters['simulator/crashReport']
     }
   },
   methods: {
@@ -43,6 +46,9 @@ export default {
     },
     $_simulator_abort () {
       return this.$store.dispatch('simulator/abort', this.$_eel)
+    },
+    $_simulator_clearCrashReport () {
+      this.$store.dispatch('simulator/clearCrashReport')
     }
   }
 }

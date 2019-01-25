@@ -28,6 +28,7 @@
       <TheTschScheduleCard/>
     </v-layout>
   </v-container>
+  <TheCrashReportDialog/>
 </v-flex>
 </template>
 
@@ -41,6 +42,7 @@ import TheE2eLatencyChartCard from '@/components/TheE2eLatencyChartCard'
 import ThePacketDropChartCard from '@/components/ThePacketDropChartCard'
 import TheRplTopologyCard from '@/components/TheRplTopologyCard'
 import TheTschScheduleCard from '@/components/TheTschScheduleCard'
+import TheCrashReportDialog from '@/components/TheCrashReportDialog'
 
 export default {
   components: {
@@ -52,7 +54,8 @@ export default {
     TheE2eLatencyChartCard,
     ThePacketDropChartCard,
     TheRplTopologyCard,
-    TheTschScheduleCard
+    TheTschScheduleCard,
+    TheCrashReportDialog
   }
 }
 </script>

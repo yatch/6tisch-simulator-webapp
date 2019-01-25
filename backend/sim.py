@@ -6,6 +6,7 @@ import re
 import shutil
 import signal
 import subprocess
+import sys
 import time
 import types
 import traceback
@@ -34,6 +35,7 @@ GEVENT_SLEEP_SECONDS_IN_SIM_ENGINE = 0.001
 
 RETURN_STATUS_SUCCESS = 'success'
 RETURN_STATUS_FAILURE = 'failure'
+RETURN_STATUS_ABORTED = 'aborted'
 
 _sim_engine = None
 _elapsed_minutes = 0
@@ -223,6 +225,21 @@ def start(settings, log_notification_filter='all'):
         sim_log.set_log_filters(SIM_LOG_FILTERS)
         _overwrite_sim_log_log(log_notification_filter)
 
+        _save_config_json(
+            sim_settings,
+            saving_settings = {
+                'combination': {},
+                'regular': settings.copy()
+            }
+        )
+
+        crash_report_path = os.path.join(
+            sim_settings.logRootDirectoryPath,
+            sim_settings.logDirectory,
+            'crash_report.log'
+        )
+        _redirect_stderr(redirect_to=open(crash_report_path, 'w'))
+
         _sim_engine = SimEngine.SimEngine()
         _elapsed_minutes = 0
         _overwrite_sim_engine_actionEndSlotframe()
@@ -232,8 +249,25 @@ def start(settings, log_notification_filter='all'):
         _sim_engine.join()
     except Exception as e:
         ret_val['status'] = RETURN_STATUS_FAILURE
-        ret_val['message'] = e
+        ret_val['message'] = str(e)
         ret_val['trace'] = traceback.format_exc()
+    else:
+        if _sim_engine.getAsn() == (
+                sim_settings.exec_numSlotframesPerRun *
+                sim_settings.tsch_slotframeLength
+            ):
+            ret_val['status'] = RETURN_STATUS_SUCCESS
+        else:
+            # simulation is aborted
+            ret_val['status'] = RETURN_STATUS_ABORTED
+    finally:
+        # housekeeping for crash_report and stderr
+        crash_report = _restore_stderr()
+        crash_report.close()
+        if os.stat(crash_report.name).st_size == 0:
+            os.remove(crash_report.name)
+        else:
+            ret_val['crash_report_path'] = crash_report.name
 
         # cleanup
         if _sim_engine is None:
@@ -243,36 +277,6 @@ def start(settings, log_notification_filter='all'):
                 sim_log.destroy()
         else:
             _destroy_sim()
-    else:
-        if _sim_engine.getAsn() == (
-                sim_settings.exec_numSlotframesPerRun *
-                sim_settings.tsch_slotframeLength
-            ):
-            # simulation ends successfully
-            # put config.json under the data directory
-            saving_settings = {
-                'combination': {},
-                'regular': settings.copy()
-            }
-            saving_settings['combination']['exec_numMotes'] = [
-                saving_settings['regular']['exec_numMotes']
-            ]
-            del saving_settings['regular']['exec_numMotes']
-            saving_config = get_default_config()
-            saving_config['settings'] = saving_settings
-            saving_config_path = os.path.join(
-                sim_settings.logRootDirectoryPath,
-                sim_settings.logDirectory,
-                'config.json'
-            )
-            with open(saving_config_path, 'w') as f:
-                json.dump(saving_config, f, indent=4)
-        else:
-            # simulation is aborted
-            pass
-        ret_val['status'] = RETURN_STATUS_SUCCESS
-        # clean up
-        _destroy_sim()
 
     return ret_val
 
@@ -469,6 +473,34 @@ def _overwrite_sim_log_log(log_notification_filter):
             pass
 
     sim_log.log = types.MethodType(_new_log, sim_log)
+
+
+def _save_config_json(sim_settings, saving_settings):
+    # put config.json under the data directory
+    saving_settings['combination']['exec_numMotes'] = [
+        saving_settings['regular']['exec_numMotes']
+    ]
+    del saving_settings['regular']['exec_numMotes']
+
+    saving_config = get_default_config()
+    saving_config['settings'] = saving_settings
+    saving_config_path = os.path.join(
+        sim_settings.logRootDirectoryPath,
+        sim_settings.logDirectory,
+        'config.json'
+    )
+    with open(saving_config_path, 'w') as f:
+        json.dump(saving_config, f, indent=4)
+
+
+def _redirect_stderr(redirect_to):
+    sys.stderr = redirect_to
+
+
+def _restore_stderr():
+    redirect_to = sys.stderr
+    sys.stderr = sys.__stderr__
+    return redirect_to
 
 
 def _destroy_sim():

@@ -19,7 +19,8 @@ export default {
     availableSFs: [],
     availableConnectivities: [],
     availableTraceFiles: [],
-    gitInfo: null
+    gitInfo: null,
+    crashReport: null
   },
   getters: {
     connectionStatus (state) { return state.connectionStatus },
@@ -29,7 +30,8 @@ export default {
     availableSFs (state) { return state.availableSFs },
     availableConnectivities (state) { return state.availableConnectivities },
     availableTraceFiles (state) { return state.availableTraceFiles },
-    gitInfo (state) { return state.gitInfo }
+    gitInfo (state) { return state.gitInfo },
+    crashReport (state) { return state.crashReport }
   },
   mutations: {
     changeConnectionStatus (state, newStatus) {
@@ -53,7 +55,8 @@ export default {
     setAvailableTraceFiles (state, sfList) {
       state.availableTraceFiles = sfList
     },
-    setGitInfo (state, gitInfo) { state.gitInfo = gitInfo }
+    setGitInfo (state, gitInfo) { state.gitInfo = gitInfo },
+    setCrashReport (state, crashReport) { state.crashReport = crashReport }
   },
   actions: {
     disconnect ({ commit }) {
@@ -68,11 +71,16 @@ export default {
     start ({ state, commit, dispatch }, eel) {
       dispatch('simulation/reset', null, { root: true })
       commit('changeOperationalStatus', 'running')
-      eel.start(state.runningSettings, state.defaultLogFilter)(() => {
-        if (state.operationalStatus === 'running') {
+      eel.start(state.runningSettings, state.defaultLogFilter)((ret) => {
+        if (ret.status === 'success') {
           // the simulation ends successfully
-          dispatch('ready')
+        } else if (ret.status === 'aborted') {
+          // aborted
+        } else if (ret.status === 'failure') {
+          // simulator crashed
+          commit('setCrashReport', ret)
         }
+        dispatch('ready')
       })
     },
     pause ({ commit }, eel) {
@@ -123,6 +131,7 @@ export default {
     setAvailableTraceFiles ({ commit }, sfList) {
       commit('setAvailableTraceFiles', sfList)
     },
-    setGitInfo ({ commit }, gitInfo) { commit('setGitInfo', gitInfo) }
+    setGitInfo ({ commit }, gitInfo) { commit('setGitInfo', gitInfo) },
+    clearCrashReport({ commit }) { commit('setCrashReport', null) }
   }
 }
