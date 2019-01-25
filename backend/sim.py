@@ -187,7 +187,7 @@ def get_available_connectivities():
 
 
 @eel.expose
-def start(settings, log_notification_filter='all'):
+def start(settings, log_notification_filter='all', stderr_redirect=True):
     global _sim_engine
     global _elapsed_minutes
 
@@ -238,7 +238,8 @@ def start(settings, log_notification_filter='all'):
             sim_settings.logDirectory,
             'crash_report.log'
         )
-        _redirect_stderr(redirect_to=open(crash_report_path, 'w'))
+        if stderr_redirect is True:
+            _redirect_stderr(redirect_to=open(crash_report_path, 'w'))
 
         _sim_engine = SimEngine.SimEngine()
         _elapsed_minutes = 0
@@ -262,12 +263,13 @@ def start(settings, log_notification_filter='all'):
             ret_val['status'] = RETURN_STATUS_ABORTED
     finally:
         # housekeeping for crash_report and stderr
-        crash_report = _restore_stderr()
-        crash_report.close()
-        if os.stat(crash_report.name).st_size == 0:
-            os.remove(crash_report.name)
-        else:
-            ret_val['crash_report_path'] = crash_report.name
+        if stderr_redirect is True:
+            crash_report = _restore_stderr()
+            crash_report.close()
+            if os.stat(crash_report.name).st_size == 0:
+                os.remove(crash_report.name)
+            else:
+                ret_val['crash_report_path'] = crash_report.name
 
         # cleanup
         if _sim_engine is None:

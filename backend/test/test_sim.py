@@ -13,7 +13,10 @@ import backend.utils
 
 
 def call_exposed_api(func, *args):
-    gevent.spawn(func, *args)
+    if func == backend.sim.start:
+        gevent.spawn(func, *args)
+    else:
+        func(*args)
     # yield the CPU so that the func is invoked in a greenlet
     gevent.sleep(backend.sim.GEVENT_SLEEP_SECONDS_IN_SIM_ENGINE)
 
@@ -51,6 +54,7 @@ def sim_engine():
 
     yield _generator
     if backend.sim._sim_engine is not None:
+        backend.sim._restore_stderr()
         backend.sim._destroy_sim()
 
 
@@ -67,11 +71,10 @@ def default_config():
 
 
 @pytest.fixture
-def default_settings():
-    config = default_config()
-    settings = config['settings']['regular']
-    for key in config['settings']['combination'].keys():
-        settings[key] = config['settings']['combination'][key][0]
+def default_settings(default_config):
+    settings = default_config['settings']['regular']
+    for key in default_config['settings']['combination'].keys():
+        settings[key] = default_config['settings']['combination'][key][0]
     return settings
 
 
@@ -237,7 +240,6 @@ def pause_option(request):
 
 
 def test_abort(sim_engine, default_settings, pause_option):
-    default_settings = backend.sim.get_default_config()['settings']
     _sim_engine = sim_engine(default_settings)
 
     # pause the simulation if necessary
@@ -287,7 +289,9 @@ def test_return_values(default_settings, sim_action, return_type):
         else:
             # make an error in settings
             del default_settings['exec_numMotes']
-        ret_val = backend.sim.start(default_settings)
+
+        ret_val = backend.sim.start(default_settings, stderr_redirect=False)
+
         if return_type == 'failure_on_sim_existence':
             # revert _sim_engine
             backend.sim._sim_engine = None

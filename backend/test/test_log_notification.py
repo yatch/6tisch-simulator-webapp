@@ -32,7 +32,11 @@ def log_events():
 
 
 def test_log(log_notification_filter, log_events):
-    settings = backend.sim.get_default_settings()
+    config = backend.sim.get_default_config()
+    settings = config['settings']['regular']
+    for key in config['settings']['combination']:
+        settings[key] = config['settings']['combination'][key][0]
+
     # use a short exec_numSlotframesPerRun so that this test ends in a
     # short time
     settings['exec_numSlotframesPerRun'] = 100
@@ -75,8 +79,9 @@ def test_log(log_notification_filter, log_events):
         # addition to the default log types which are defined in
         # sim.py
         _filter = (
+            log_notification_filter +
             backend.sim.DEFAULT_LOG_NOTIFICATION_FILTER +
-            log_notification_filter
+            ['_backend.tick.minute'] # special log event for GUI
         )
         _log_types = []
         for event in log_events:
