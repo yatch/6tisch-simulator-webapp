@@ -200,6 +200,7 @@ export default {
       if (cellWidth < this.minCellWidth) {
         // the cell size is too small to show; make this.cells empty
         this.errorMessage = 'Slotframe is too long to display'
+        this.$_app_status = 'ready'
       } else {
         // fill this.cells with cell objects
         let leftPadding = (this.canvasWidth - cellWidth * this.numSlots) / 2
