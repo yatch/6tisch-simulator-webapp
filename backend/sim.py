@@ -260,6 +260,12 @@ def start(settings, log_notification_filter='all', stderr_redirect=True):
                 sim_settings.tsch_slotframeLength
             ):
             ret_val['status'] = RETURN_STATUS_SUCCESS
+            # rename .dat file and remove the subdir
+            dat_file_path = sim_settings.getOutputFile()
+            subdir_path = os.path.dirname(dat_file_path)
+            new_file_name = subdir_path + '.dat'
+            os.rename(dat_file_path, new_file_name)
+            os.rmdir(subdir_path)
         else:
             # simulation is aborted
             ret_val['status'] = RETURN_STATUS_ABORTED
