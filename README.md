@@ -69,7 +69,6 @@ are stored. The default directory configuration is shown below:
 
 ## Usage
 
-
 Run `backend/start`, then access to `http://127.0.0.1:8080` by your
 web browser:
 
@@ -79,6 +78,13 @@ Starting the backend server on 127.0.0.1:8080
 ```
 
 To stop the backend, use `Ctrl-C`.
+
+
+## Caveat
+
+You could have a different simulation result by the WebApp from one by
+`runSim.py` of the simulator even though you use the same random seed
+due to a limitation in implementation.
 
 
 ## Useful Commands for Developers
