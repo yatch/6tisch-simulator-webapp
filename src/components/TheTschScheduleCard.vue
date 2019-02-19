@@ -89,8 +89,11 @@ export default {
       matrixIsAvailable: false,
       errorMessage: null,
       cells: [],
-      canvasWidth: 727,
-      canvasHeight: 132,
+      canvasWidth: 739,
+      canvasHeight: 144,
+      textStyles: { size: 10 },
+      textWidth: 12,
+      textHeight: 12,
       minCellWidth: 3,
       minCellHeight: 3,
       minLeftPadding: 10,
@@ -203,8 +206,8 @@ export default {
         this.$_app_status = 'ready'
       } else {
         // fill this.cells with cell objects
-        let leftPadding = (this.canvasWidth - cellWidth * this.numSlots) / 2
-        let topPadding = (this.canvasHeight - cellHeight * this.numChannels) / 2
+        let leftPadding = (this.canvasWidth - this.textWidth - cellWidth * this.numSlots) / 2
+        let topPadding = (this.canvasHeight - this.textHeight - cellHeight * this.numChannels) / 2
 
         this.$_app_status = 'busy'
         this.generateCells(
@@ -214,6 +217,7 @@ export default {
       }
     },
     generateCells (config, startingCell) {
+
       for (let slotOffset = startingCell.slotOffset;
            slotOffset < this.numSlots;
            slotOffset++) {
@@ -232,12 +236,34 @@ export default {
         for (let channelOffset = startingCell.channelOffset;
              channelOffset < this.numChannels;
              channelOffset++) {
-          const x = slotOffset * config.cellWidth + config.leftPadding
+          const x = ((slotOffset * config.cellWidth) + this.textWidth + config.leftPadding)
           const y = channelOffset * config.cellHeight + config.topPadding
           const cell = this.two.makeRectangle(x,
                                               y,
                                               config.cellWidth,
                                               config.cellHeight)
+
+          if (slotOffset === 0 && (channelOffset % 5) === 0) {
+            // put a channel offset label
+            this.two.makeText(
+              channelOffset,
+              config.leftPadding,
+              y,
+              this.textStyles
+            )
+          }
+
+          if (((slotOffset % 10) === 0) &&
+              (channelOffset === (this.numChannels - 1))) {
+            // put a slot offset label
+            this.two.makeText(
+              slotOffset,
+              x,
+              y + this.textHeight,
+              this.textStyles
+            )
+          }
+
           // add a custom variable
           cell.numTxCells = 0
           this.cells[slotOffset].push(cell)
