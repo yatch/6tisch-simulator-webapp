@@ -173,17 +173,17 @@ def get_available_connectivities():
     ret_val = set()
     with open(conn_py_path, 'r') as f:
         ret_val = set(
-            re.findall(r'Connectivity\w+', f.read(), re.MULTILINE)
+            re.findall(r'ConnectivityMatrix\w+', f.read(), re.MULTILINE)
         )
 
-    # remove "ConnectivityBase" that is the base (super) class for
-    # concrete scheduling function implementations
-    ret_val.remove('ConnectivityBase')
+    # remove "ConnectivityMatrixBase" that is the base (super) class
+    # for concrete scheduling function implementations
+    ret_val.remove('ConnectivityMatrixBase')
 
     # strip leading "Connectivity" and return
     return map(
         lambda elem:
-        re.sub(r'Connectivity(\w+)', r'\1', elem),
+        re.sub(r'ConnectivityMatrix(\w+)', r'\1', elem),
         ret_val
     )
 
