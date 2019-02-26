@@ -326,9 +326,7 @@ export default {
     },
     getMaxExecNumMinuetsFromTrace (traceFilePath) {
       const trace = this.getTrace(traceFilePath)
-      const startDate = new Date(trace.config.start_date)
-      const stopDate= new Date(trace.config.stop_date)
-      return Math.floor((stopDate - startDate) / 1000 / 60)
+      return trace.config.maxDuration
     },
     getTrace(traceFilePath) {
       return this.$_simulator_availableTraceFiles.find(trace => {

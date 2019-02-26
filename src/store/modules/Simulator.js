@@ -128,8 +128,15 @@ export default {
     setAvailableConnectivities ({ commit }, connList) {
       commit('setAvailableConnectivities', connList)
     },
-    setAvailableTraceFiles ({ commit }, sfList) {
-      commit('setAvailableTraceFiles', sfList)
+    setAvailableTraceFiles ({ commit }, traceFileList) {
+      commit('setAvailableTraceFiles',
+             traceFileList.map(trace => {
+               const startDate = new Date(trace.config.start_date)
+               const stopDate = new Date(trace.config.stop_date)
+               trace.config.maxDuration =  Math.floor((stopDate - startDate) /
+                                                      1000 /
+                                                      60)
+               return trace}))
     },
     setGitInfo ({ commit }, gitInfo) { commit('setGitInfo', gitInfo) },
     clearCrashReport({ commit }) { commit('setCrashReport', null) }
