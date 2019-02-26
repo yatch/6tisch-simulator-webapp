@@ -67,6 +67,13 @@ export default {
           disabled: true
         },
         {
+          name: 'Trace Files',
+          path: '/traces',
+          icon: 'folder',
+          action: () => { this.close() },
+          disabled: true
+        },
+        {
           name: 'Reload',
           path: undefined,
           icon: 'refresh',
