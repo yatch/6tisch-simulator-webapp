@@ -46,7 +46,7 @@ export default {
           value: 'config.start_date'
         },
         {
-          text: 'Duration (sec)',
+          text: 'Duration (min)',
           value: 'config.maxDuration'
         },
         {
