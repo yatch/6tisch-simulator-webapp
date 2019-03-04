@@ -52,6 +52,38 @@ def get_default_config():
 
     with open(backend.SIM_CONFIG_PATH, 'r') as f:
         config = json.load(f)
+
+    # convert a path of the trace file to the abosolute one
+    original_config_path = os.path.join(backend.get_simulator_path(), 'bin')
+    for settings_type in ['combination', 'regular']:
+        if 'conn_trace' not in config['settings'][settings_type]:
+            continue
+        if isinstance(config['settings'][settings_type]['conn_trace'], list):
+            config['settings'][settings_type]['conn_trace'] = map(
+                lambda trace_file:
+                os.path.abspath(os.path.join(original_config_path, trace_file))
+                if os.path.isabs(trace_file) is False
+                else trace_file
+            )
+        elif (
+                config['settings'][settings_type]['conn_trace']
+                and
+                (
+                    os.path.isabs(
+                        config['settings'][settings_type]['conn_trace']
+                    ) is False
+                )
+            ):
+            config['settings'][settings_type]['conn_trace'] = os.path.abspath(
+                os.path.join(
+                    original_config_path,
+                    config['settings'][settings_type]['conn_trace']
+                )
+            )
+        else:
+            # it's an absolute path or None; it doesn't need the coversion
+            pass
+
     return config
 
 
@@ -94,7 +126,7 @@ def put_default_config(config_str):
         with open(backend.SIM_CONFIG_PATH, 'w') as f:
             json.dump(new_config, f)
         ret = {
-            'config': new_config,
+            'config': get_default_config(),
             'message': 'success'
         }
     else:
