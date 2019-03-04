@@ -203,12 +203,16 @@ export default {
       if (v === 'K7') {
         // this item is for the trace file
         this.conn_trace.disabled = false
-        // select the first item in the options
-        if (this.conn_trace.selectItems.length > 0) {
+        const conn_trace_file = this.$_simulator_runningSettings.conn_trace
+        let selected_conn_trace
+        // find what is specified in config.file
+        if (conn_trace_file === null) {
           this.conn_trace_model = this.conn_trace.selectItems[0].value
+        } else {
+          this.conn_trace_model = conn_trace_file
         }
         this.exec_numMotes.disabled = true
-        if (this.conn_trace_mode === '') {
+        if (this.conn_trace_model === '') {
           this.conn_trace.ready = false
         } else {
           this.conn_trace.ready = true
