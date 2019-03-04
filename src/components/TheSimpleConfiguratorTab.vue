@@ -204,7 +204,6 @@ export default {
         // this item is for the trace file
         this.conn_trace.disabled = false
         const conn_trace_file = this.$_simulator_runningSettings.conn_trace
-        let selected_conn_trace
         // find what is specified in config.file
         if (conn_trace_file === null) {
           this.conn_trace_model = this.conn_trace.selectItems[0].value
