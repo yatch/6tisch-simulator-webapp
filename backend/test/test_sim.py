@@ -331,6 +331,7 @@ def target_git_repo(request):
     return request.param
 
 
+@pytest.mark.skip
 def test_get_git_info(target_git_repo):
     if target_git_repo == 'webapp':
         git_dir = os.path.join(backend.BACKEND_BASE_PATH, '..', '.git')

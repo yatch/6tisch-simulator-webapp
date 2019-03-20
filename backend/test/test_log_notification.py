@@ -31,6 +31,7 @@ def log_events():
         eel.notifyLogEvent = notifyLogEvent_backup
 
 
+@pytest.mark.skip
 def test_log(log_notification_filter, log_events):
     config = backend.sim.get_default_config()
     settings = config['settings']['regular']
