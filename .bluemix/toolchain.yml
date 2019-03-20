@@ -12,7 +12,7 @@ template:
     - repo
   info:
     git url: >-
-      [https://gitlab.inria.fr/ytanaka/6tisch-simulator-webapp](https://gitlab.inria.fr/ytanaka/6tisch-simulator-webapp)
+      [http://github.com/yatch/6tisch-simulator-webapp/](http://github.com/yatch/6tisch-simulator-webapp/)
 toolchain:
   name: '{{baseName}}-{{timestamp}}'
   template:
