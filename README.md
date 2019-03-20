@@ -29,7 +29,7 @@ are stored. The default directory configuration is shown below:
 
 ```
 .
-├── 6tisch-simulator-app
+├── 6tisch-simulator-webapp
 └── simulator
     └── traces
 ```
@@ -66,3 +66,15 @@ due to a limitation in implementation.
 With `--auto-restart` option, the `backend` server will be restarted
 automatically when it detects file changes under the directories of
 the 6TiSCH Simulator and the 6TiSCH Simulator WebApp.
+
+## Deploy artifacts to the simulator code tree
+
+Run `npm run deploy`; then `dist`, `backend`, and other files will be
+copied to `gui` directory under the simulator code tree.
+
+```
+.
+├── 6tisch-simulator-webapp
+└── simulator
+    └── gui
+```
