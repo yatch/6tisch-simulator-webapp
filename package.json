@@ -11,7 +11,7 @@
     "dev-server": "vue-cli-service serve",
     "test:backend": "pytest backend",
     "test:unit": "vue-cli-service test:unit",
-    "deploy": "./deploy.py"
+    "deploy": "npm run build && ./deploy.py"
   },
   "dependencies": {
     "apexcharts": "^2.6.0",
