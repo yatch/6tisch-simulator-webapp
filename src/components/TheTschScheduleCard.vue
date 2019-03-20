@@ -84,13 +84,24 @@ import Simulator from '@/mixins/Simulator'
 export default {
   mixins: [App, Simulator, Simulation],
   data () {
+    let isLargeCanvas
+    let canvasWidth
+    const canvasHeight = 144
+    if (this.$vuetify.breakpoint.name == 'xl') {
+      isLargeCanvas = true
+      canvasWidth = 1100
+    } else {
+      isLargeCanvas = false
+      canvasWidth = 739
+    }
     return {
       two: null,
       matrixIsAvailable: false,
       errorMessage: null,
       cells: [],
-      canvasWidth: 739,
-      canvasHeight: 144,
+      isLargeCanvas,
+      canvasWidth,
+      canvasHeight,
       textStyles: { size: 10 },
       textWidth: 12,
       textHeight: 12,
@@ -132,7 +143,8 @@ export default {
   watch: {
     breakpoint () {
       if (this.matrixIsAvailable === true &&
-          this.breakpoint.width < this.minBrowserWidthToDisplay) {
+          ((this.breakpoint.width < this.minBrowserWidthToDisplay) ||
+           (this.isLargeCanvas && this.$vuetify.breakpoint.name != 'xl'))) {
         this.errorMessage = "Browser is too small"
       } else {
         this.errorMessage = null
