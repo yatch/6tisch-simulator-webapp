@@ -10,7 +10,7 @@ Do you want to try the 6TiSCH Simulator easily with [IBM
 Cloud](https://www.ibm.com/cloud/)? OK, use this button:
 
 [![Deploy to IBM
-Cloud](https://cloud.ibm.com/devops/setup/deploy/button.png)](https://cloud.ibm.com/devops/setup/deploy?repository=https://gitlab.inria.fr/ytanaka/6tisch-simulator-webapp&branch=master)
+Cloud](https://cloud.ibm.com/devops/setup/deploy/button.png)](https://cloud.ibm.com/devops/setup/deploy?repository=https://github.com/yatch/6tisch-simulator-webapp)
 
 By clicking the button, you will have:
 
