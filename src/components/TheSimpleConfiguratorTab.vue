@@ -329,7 +329,11 @@ export default {
     },
     getMaxExecNumMinuetsFromTrace (traceFilePath) {
       const trace = this.getTrace(traceFilePath)
-      return trace.config.maxDuration
+      if (trace === undefined) {
+        return Infinity
+      } else {
+        return trace.config.maxDuration
+      }
     },
     getTrace(traceFilePath) {
       return this.$_simulator_availableTraceFiles.find(trace => {
