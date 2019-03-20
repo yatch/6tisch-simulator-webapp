@@ -38,7 +38,7 @@ for repo in [webapp_git_repo, simulator_git_repo]:
             (os.path.isfile(WEBAPP_COMMIT_INFO_PATH))
         ):
         with open(WEBAPP_COMMIT_INFO_PATH) as f:
-            commit_hash = f.read()
+            commit_hash = os.path.basename(f.readline())
         info['repo'] = GITHUB_REPO_URL
         info['branch'] = 'master'
         info['short_hash'] = commit_hash[:7]

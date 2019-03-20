@@ -12,6 +12,7 @@ BACKEND_DIR = 'backend'
 DEPLOY_TARGET_SUBDIR = 'gui'
 WEBAPP_COMMIT_INFO = 'WEBAPP_COMMIT_INFO.txt'
 LICENSE = 'LICENSE'
+GITHUB_REPO_URL = 'https://github.com/yatch/6tisch-simulator-webapp'
 
 webapp_dir_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -84,7 +85,7 @@ print 'generating {0} at {1}...'.format(WEBAPP_COMMIT_INFO, deploy_path)
 with open(dst_webapp_commit_info_path, 'w') as f:
     repo = git.Repo(webapp_dir_path)
     commit_hash = repo.head.object.hexsha
-    f.write('{0}\n'.format(commit_hash))
+    f.write('{0}/commit/{1}\n'.format(GITHUB_REPO_URL, commit_hash))
 
 # copy LICENSE
 src_license_path = os.path.join(webapp_dir_path, LICENSE)
