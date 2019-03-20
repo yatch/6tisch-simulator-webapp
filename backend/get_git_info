@@ -9,7 +9,16 @@ import git
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 import backend
 
-webapp_git_repo = git.Repo(os.path.join(backend.BACKEND_BASE_PATH, '..'))
+GITHUB_REPO_URL = 'https://github.com/yatch/6tisch-simulator-webapp/'
+WEBAPP_COMMIT_INFO_PATH = os.path.join(
+    backend.BACKEND_BASE_PATH, '..', 'WEBAPP_COMMIT_INFO.txt'
+)
+
+try:
+    webapp_git_repo = git.Repo(os.path.join(backend.BACKEND_BASE_PATH, '..'))
+except git.exc.InvalidGitRepositoryError:
+    webapp_git_repo = GITHUB_REPO_URL
+
 with open(backend.BACKEND_CONFIG_PATH) as f:
     config = json.load(f)
     simulator_git_repo = git.Repo(
@@ -22,14 +31,26 @@ with open(backend.BACKEND_CONFIG_PATH) as f:
 ret = {}
 for repo in [webapp_git_repo, simulator_git_repo]:
     info = {}
-    info['repo'] = os.path.dirname(repo.git_dir)
 
-    try:
-        info['branch'] = webapp_git_repo.active_branch.name
-    except TypeError:
-        info['branch'] = 'unknown'
+    if (
+            (repo == webapp_git_repo)
+            and
+            (os.path.isfile(WEBAPP_COMMIT_INFO_PATH))
+        ):
+        with open(WEBAPP_COMMIT_INFO_PATH) as f:
+            commit_hash = f.read()
+        info['repo'] = GITHUB_REPO_URL
+        info['branch'] = 'master'
+        info['short_hash'] = commit_hash[:7]
+    else:
+        info['repo'] = os.path.dirname(repo.git_dir)
 
-    info['short_hash'] = repo.head.object.hexsha[:7]
+        try:
+            info['branch'] = repo.active_branch.name
+        except TypeError:
+            info['branch'] = 'unknown'
+
+        info['short_hash'] = repo.head.object.hexsha[:7]
 
     if repo == webapp_git_repo:
         ret['webapp'] = info
