@@ -290,6 +290,14 @@ export default {
             value: v.file_path
           }
         })
+        if (this.conn_trace_model !== null) {
+          // update the trace info
+          const traceFilePath = this.conn_trace_model
+          this.exec_numMotes_model = this.getNumMotesFromTrace(traceFilePath)
+          this.exec_numMinutes.modelMax = (
+            this.getMaxExecNumMinuetsFromTrace(traceFilePath)
+          )
+        }
       }
     }
   },
