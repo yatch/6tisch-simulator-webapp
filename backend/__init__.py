@@ -65,7 +65,10 @@ def get_trace_dir_path():
     if trace_dir_path is None:
         raise ValueError('trace_dir_path is not found')
     else:
-        return trace_dir_path
+        return os.path.join(
+            os.path.dirname(BACKEND_CONFIG_PATH),
+            trace_dir_path
+        )
 
 # add the path of the simulator source directory to Python module
 # search path list so that SimEngine and other relevant modules can be
