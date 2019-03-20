@@ -29,7 +29,7 @@
         <v-btn
           @click="onClickPlay"
           :icon="$vuetify.breakpoint.xsOnly"
-          :disabled="disabled"
+          :disabled="disabled_play"
           >
           <span v-if="$vuetify.breakpoint.smAndUp">
             {{ running | playString }}
@@ -39,7 +39,7 @@
         <v-btn
           @click="onClickStop"
           :icon="$vuetify.breakpoint.xsOnly"
-          :disabled="disabled"
+          :disabled="disabled_stop"
           >
           <span v-if="$vuetify.breakpoint.smAndUp">Stop</span>
           <v-icon>stop</v-icon>
@@ -116,8 +116,13 @@ export default {
   mixins: [App, Simulator, Simulation],
   computed: {
     running () { return this.$_simulator_operationalStatus === 'running' },
-    disabled () {
+    disabled_play () {
       return (this.$_app_status !== 'ready' ||
+              this.$route.path !== '/')
+    },
+    disabled_stop () {
+      return (this.$_app_status !== 'ready' ||
+              this.$_simulator_operationalStatus === 'ready' ||
               this.$route.path !== '/')
     },
     ready() { return this.$_simulator_operationalStatus === 'ready' },
