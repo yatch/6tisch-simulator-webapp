@@ -11,6 +11,7 @@ DIST_DIR = 'dist'
 BACKEND_DIR = 'backend'
 DEPLOY_TARGET_SUBDIR = 'gui'
 WEBAPP_COMMIT_INFO = 'WEBAPP_COMMIT_INFO.txt'
+LICENSE = 'LICENSE'
 
 webapp_dir_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -84,3 +85,10 @@ with open(dst_webapp_commit_info_path, 'w') as f:
     repo = git.Repo(webapp_dir_path)
     commit_hash = repo.head.object.hexsha
     f.write('{0}\n'.format(commit_hash))
+
+# copy LICENSE
+src_license_path = os.path.join(webapp_dir_path, LICENSE)
+dst_license_path = os.path.join(deploy_path, LICENSE)
+remove_if_exist(dst_license_path)
+print 'copying {0} at {1}...'.format(LICENSE, deploy_path)
+shutil.copyfile(src_license_path, dst_license_path)
