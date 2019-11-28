@@ -9,7 +9,7 @@ export default {
       'tsch.synced',
       'tsch.desynced',
       'secjoin.joined',
-      'secjoin.failed',
+      'secjoin.unjoined',
       'rpl.churn'
     ],
     connectionStatus: 'disconnected',

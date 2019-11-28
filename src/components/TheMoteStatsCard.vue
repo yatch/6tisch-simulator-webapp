@@ -71,6 +71,8 @@ export default {
     $_simulation_lastSecJoinEvent (newEvent) {
       if (newEvent._type === 'secjoin.joined') {
         this.numJoined += 1
+      } else if (newEvent._type === 'secjoin.unjoined') {
+        this.numJoined -= 1
       }
     }
   },
