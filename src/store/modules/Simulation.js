@@ -135,8 +135,7 @@ export default {
                  event._type === 'tsch.desynced') {
         commit('updateLastTschSyncEvent', event)
       } else if (event._type === 'secjoin.joined' ||
-                 event._type === 'secjoin.unjoined' ||
-                 event._type === 'secjoin.failed') {
+                 event._type === 'secjoin.unjoined') {
         commit('updateLastSecJoinEvent', event)
       }
     },
