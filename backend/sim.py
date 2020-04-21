@@ -11,6 +11,11 @@ import time
 import types
 import traceback
 
+# do monkey patching here before eel is imported
+# https://github.com/ChrisKnott/Eel#asynchronous-python
+import gevent.monkey
+gevent.monkey.patch_all()
+
 import eel
 import gevent
 import psutil

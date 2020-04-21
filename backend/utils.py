@@ -3,6 +3,11 @@ import os
 import subprocess
 import sys
 
+# do monkey patching here before eel is imported
+# https://github.com/ChrisKnott/Eel#asynchronous-python
+import gevent.monkey
+gevent.monkey.patch_all()
+
 # import backend.routes before eel so that our custom routes are
 # processed first. this is needed to provide a GET route to
 # '/results/*.zip'. otherwise route to <path:path> in Eel will
