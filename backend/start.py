@@ -61,7 +61,8 @@ def start_server(dev_mode):
         args = ['--dev']
     else:
         args = []
-    server_process = subprocess.Popen([sys.executable, __file__] + args)
+    server_process = subprocess.Popen([sys.executable, __file__] + args,
+                                      encoding='utf-8')
 
 def stop_server():
     global server_process

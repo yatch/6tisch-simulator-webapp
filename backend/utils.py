@@ -92,7 +92,8 @@ def create_config_json():
     popen = subprocess.Popen(
         [sys.executable, check_config_json, '-s', '-c', '-'],
         stdin  = subprocess.PIPE,
-        stdout = subprocess.PIPE
+        stdout = subprocess.PIPE,
+        encoding='utf8'
     )
     _ = popen.communicate(json.dumps(default_config))
     if popen.returncode != 0:

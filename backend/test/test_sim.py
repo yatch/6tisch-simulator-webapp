@@ -344,23 +344,21 @@ def test_get_git_info(target_git_repo):
                 '.git'
             )
 
-    branch_name = subprocess.check_output([
-        'git',
-        '--git-dir',
-        git_dir,
-        'rev-parse',
-        '--abbrev-ref',
-        'HEAD'
-    ]).strip()
+    branch_name = subprocess.check_output(['git',
+                                           '--git-dir',
+                                           git_dir,
+                                           'rev-parse',
+                                           '--abbrev-ref',
+                                           'HEAD'],
+                                          encoding='utf-8').strip()
 
-    short_hash = subprocess.check_output([
-        'git',
-        '--git-dir',
-        git_dir,
-        'rev-parse',
-        '--short=7',
-        'HEAD'
-    ]).strip()
+    short_hash = subprocess.check_output(['git',
+                                          '--git-dir',
+                                          git_dir,
+                                          'rev-parse',
+                                          '--short=7',
+                                          'HEAD'],
+                                         encoding='utf-8').strip()
 
     ret = backend.sim.get_git_info()
     assert ret[target_git_repo]['branch'] == branch_name

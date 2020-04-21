@@ -115,7 +115,8 @@ def put_default_config(config_str):
         [sys.executable, check_config_json, '-s', '-c', '-'],
         stdin  = subprocess.PIPE,
         stdout = subprocess.PIPE,
-        stderr = subprocess.PIPE
+        stderr = subprocess.PIPE,
+        encoding='utf-8'
     )
     _, stderrdata = popen.communicate(json.dumps(new_config))
 
@@ -188,7 +189,8 @@ def get_git_info():
         'get_git_info'
     )
     return json.loads(subprocess.check_output(
-        [sys.executable, get_git_info_cmd_path])
+        [sys.executable, get_git_info_cmd_path],
+        encoding='utf-8')
     )
 
 
