@@ -19,10 +19,10 @@ webapp_dir_path = os.path.abspath(os.path.dirname(__file__))
 def remove_if_exist(path):
     if os.path.exists(path):
         if os.path.isdir(path):
-            print 'removing {0}...'.format(path)
+            print('removing {0}...'.format(path))
             shutil.rmtree(path)
         elif os.path.isfile(path):
-            print 'removing {0}'.format(path)
+            print('removing {0}'.format(path))
             os.remove(path)
         else:
             raise NotImplementedError('cannot remove {0}'.format(path))
@@ -56,14 +56,14 @@ elif not os.path.isdir(deploy_path):
 # dist
 dst_dist_path = os.path.join(deploy_path, DIST_DIR)
 remove_if_exist(dst_dist_path)
-print 'copying {0} to {1}...'.format(src_dist_path, dst_dist_path)
+print('copying {0} to {1}...'.format(src_dist_path, dst_dist_path))
 shutil.copytree(src_dist_path, dst_dist_path)
 
 # backend
 src_backend_path = os.path.join(webapp_dir_path, BACKEND_DIR)
 dst_backend_path = os.path.join(deploy_path, BACKEND_DIR)
 remove_if_exist(dst_backend_path)
-print 'copying {0} to {1}...'.format(src_backend_path, dst_backend_path)
+print('copying {0} to {1}...'.format(src_backend_path, dst_backend_path))
 shutil.copytree(src_backend_path, dst_backend_path)
 
 # backend.config.json
@@ -75,13 +75,13 @@ with open(dst_backend_config_json_path, 'w') as f:
         'trace_dir_path': '../traces',
         'host': '127.0.0.1'
     }
-    print 'generating {0} at {1}...'.format(BACKEND_CONFIG_JSON, deploy_path)
+    print('generating {0} at {1}...'.format(BACKEND_CONFIG_JSON, deploy_path))
     json.dump(config, f, indent=4)
 
 # add WEBAPP_COMMIT_INFO.txt
 dst_webapp_commit_info_path = os.path.join(deploy_path, WEBAPP_COMMIT_INFO)
 remove_if_exist(dst_webapp_commit_info_path)
-print 'generating {0} at {1}...'.format(WEBAPP_COMMIT_INFO, deploy_path)
+print('generating {0} at {1}...'.format(WEBAPP_COMMIT_INFO, deploy_path))
 with open(dst_webapp_commit_info_path, 'w') as f:
     repo = git.Repo(webapp_dir_path)
     commit_hash = repo.head.object.hexsha
@@ -91,5 +91,5 @@ with open(dst_webapp_commit_info_path, 'w') as f:
 src_license_path = os.path.join(webapp_dir_path, LICENSE)
 dst_license_path = os.path.join(deploy_path, LICENSE)
 remove_if_exist(dst_license_path)
-print 'copying {0} at {1}...'.format(LICENSE, deploy_path)
+print('copying {0} at {1}...'.format(LICENSE, deploy_path))
 shutil.copyfile(src_license_path, dst_license_path)

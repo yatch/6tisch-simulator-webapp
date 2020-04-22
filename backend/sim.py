@@ -11,6 +11,11 @@ import time
 import types
 import traceback
 
+# do monkey patching here before eel is imported
+# https://github.com/ChrisKnott/Eel#asynchronous-python
+import gevent.monkey
+gevent.monkey.patch_all()
+
 import eel
 import gevent
 import psutil
@@ -59,12 +64,12 @@ def get_default_config():
         if 'conn_trace' not in config['settings'][settings_type]:
             continue
         if isinstance(config['settings'][settings_type]['conn_trace'], list):
-            config['settings'][settings_type]['conn_trace'] = map(
+            config['settings'][settings_type]['conn_trace'] = list(map(
                 lambda trace_file:
                 os.path.abspath(os.path.join(original_config_path, trace_file))
                 if os.path.isabs(trace_file) is False
                 else trace_file
-            )
+            ))
         elif (
                 config['settings'][settings_type]['conn_trace']
                 and
@@ -115,7 +120,8 @@ def put_default_config(config_str):
         [sys.executable, check_config_json, '-s', '-c', '-'],
         stdin  = subprocess.PIPE,
         stdout = subprocess.PIPE,
-        stderr = subprocess.PIPE
+        stderr = subprocess.PIPE,
+        encoding='utf-8'
     )
     _, stderrdata = popen.communicate(json.dumps(new_config))
 
@@ -156,11 +162,7 @@ def get_available_scheduling_functions():
     ret_val.remove('SchedulingFunctionBase')
 
     # strip leading "SchedulingFunction" and return
-    return map(
-        lambda elem:
-        re.sub(r'SchedulingFunction(\w+)', r'\1', elem),
-        ret_val
-    )
+    return [re.sub(r'SchedulingFunction(\w+)', r'\1', elem) for elem in ret_val]
 
 
 @eel.expose
@@ -192,7 +194,8 @@ def get_git_info():
         'get_git_info'
     )
     return json.loads(subprocess.check_output(
-        [sys.executable, get_git_info_cmd_path])
+        [sys.executable, get_git_info_cmd_path],
+        encoding='utf-8')
     )
 
 
@@ -213,11 +216,7 @@ def get_available_connectivities():
     ret_val.remove('ConnectivityMatrixBase')
 
     # strip leading "Connectivity" and return
-    return map(
-        lambda elem:
-        re.sub(r'ConnectivityMatrix(\w+)', r'\1', elem),
-        ret_val
-    )
+    return [re.sub(r'ConnectivityMatrix(\w+)', r'\1', elem) for elem in ret_val]
 
 
 @eel.expose
