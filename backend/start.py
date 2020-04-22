@@ -61,7 +61,8 @@ def start_server(dev_mode):
         args = ['--dev']
     else:
         args = []
-    server_process = subprocess.Popen([sys.executable, __file__] + args)
+    server_process = subprocess.Popen([sys.executable, __file__] + args,
+                                      encoding='utf-8')
 
 def stop_server():
     global server_process
@@ -85,16 +86,16 @@ if args.auto_restart is True:
             super(PythonFileEventHandler, self).__init__(patterns=['*.py'])
 
         def on_any_event(self, event):
-            print 'restarting server...'
+            print('restarting server...')
             stop_server()
             start_server(args.dev_mode)
 
     # setup watchdog observer
     event_handler = PythonFileEventHandler()
     observer = watchdog.observers.Observer()
-    print 'Start watching .py files under "{0}"'.format(BACKEND_ROOTDIR_PATH)
+    print('Start watching .py files under "{0}"'.format(BACKEND_ROOTDIR_PATH))
     observer.schedule(event_handler, BACKEND_ROOTDIR_PATH, recursive=True)
-    print 'Start watching .py files under "{0}"'.format(SIM_ENGINE_MODULE_PATH)
+    print('Start watching .py files under "{0}"'.format(SIM_ENGINE_MODULE_PATH))
     observer.schedule(event_handler, SIM_ENGINE_MODULE_PATH, recursive=True)
     observer.start()
 
