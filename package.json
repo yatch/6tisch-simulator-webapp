@@ -14,7 +14,7 @@
     "deploy": "npm run build && ./deploy.py"
   },
   "dependencies": {
-    "apexcharts": "^2.6.0",
+    "apexcharts": "^3.24.0",
     "concurrently": "^4.1.0",
     "cytoscape-dagre": "^2.2.2",
     "two.js": "^0.7.0-beta.3",
